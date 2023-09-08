@@ -20,5 +20,6 @@
       "coingecko_id": "tokenize-xchange",
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
     }
-  ]
+  ],
+  "theme_color": "#FF671E"
 }
