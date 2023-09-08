@@ -21,5 +21,6 @@
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
     }
   ],
-  "theme_color": "#FF671E"
+  "theme_color": "#FF671E",
+  "features": ["dashboard", "governance", "staking", "blocks", "uptime", "ibc", "supply", "parameters", "consensus", "state-sync", "widget"]
 }
