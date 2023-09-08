@@ -1,0 +1,24 @@
+{
+  "chain_name": "titan-testnet",
+  "api": [
+    "https://titan-testnet-lcd.tokenize-dev.com"
+  ],
+  "rpc": [
+    "https://titan-testnet-rpc.tokenize-dev.com",
+    "https://titan-testnet-rpc-2.tokenize-dev.com"
+  ],
+  "sdk_version": "0.47.5",
+  "coin_type": "118",
+  "min_tx_fee": "800",
+  "addr_prefix": "titan",
+  "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg",
+  "assets": [
+    {
+      "base": "utkx",
+      "symbol": "TKX",
+      "exponent": "6",
+      "coingecko_id": "tokenize-xchange",
+      "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
+    }
+  ]
+}
