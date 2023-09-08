@@ -104,7 +104,7 @@ async function fetchPosition() {
     httpStatusText.value = response.statusText;
 
     const data = await response.json();
-    positions.value = data.result.round_state.validators.validators;
+    positions.value = data.result.round_state.validators?.validators;
   } catch (error) {
     // @ts-ignore
     httpstatus.value = error?.status || 500;

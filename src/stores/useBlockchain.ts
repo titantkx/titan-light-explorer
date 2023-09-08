@@ -101,14 +101,6 @@ export const useBlockchain = defineStore('blockchain', {
       return [
         ...currNavItem,
         { heading: 'Ecosystem' } as NavSectionTitle,
-        {
-          title: 'All Blockchains',
-          to: { path: '/' },
-          badgeContent: this.dashboard.length,
-          badgeClass: 'bg-primary',
-          i18n: true,
-          icon: { icon: 'mdi-grid', size: '22' },
-        } as NavLink,
       ];
     },
   },
