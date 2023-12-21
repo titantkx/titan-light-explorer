@@ -52,6 +52,7 @@
     "vue3-perfect-scrollbar": "^1.6.1"
   },
   "devDependencies": {
+    "@keplr-wallet/types": "^0.12.54",
     "@osmonauts/telescope": "^0.88.2",
     "@types/marked": "^4.0.8",
     "@types/node": "^18.11.12",
