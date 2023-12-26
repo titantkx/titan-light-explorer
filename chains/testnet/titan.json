@@ -2,6 +2,7 @@
   "chain_name": "titan_18888-1",
   "api": ["http://0.0.0.0:1317"],
   "rpc": ["http://0.0.0.0:26657"],
+  "json_rpc": ["http://0.0.0.0:8545"],
   "sdk_version": "0.47.5",
   "coin_type": "60",
   "min_tx_fee": "800",

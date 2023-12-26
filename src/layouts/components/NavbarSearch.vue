@@ -1,19 +1,22 @@
 <script lang="ts" setup>
+import { useBlockchain } from '@/stores';
 import { Icon } from '@iconify/vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useBlockchain } from '@/stores';
 const vueRouters = useRouter();
 const blockStore = useBlockchain();
+
 let searchModalShow = ref(false);
 let searchQuery = ref('');
 let errorMessage = ref('');
+
 onMounted(() => {});
 
 function closeSearchModal() {
   searchModalShow.value = false;
 }
+
 function openSearchModal() {
   searchModalShow.value = true;
 }
@@ -22,6 +25,7 @@ function preventClick(event: any) {
   event.preventDefault();
   event.stopPropagation();
 }
+
 function confirm() {
   errorMessage.value = '';
   const key = searchQuery.value;
@@ -30,7 +34,7 @@ function confirm() {
     return;
   }
   const height = /^\d+$/;
-  const txhash = /^[A-Z\d]{64}$/;
+  const txhash = /^([A-Z\d]{64}|0x[a-fA-F0-9]{64})$/;
   const addr = /^[a-z\d]+1[a-z\d]{38,58}$/;
 
   const current = blockStore?.current?.chainName || '';
@@ -39,20 +43,13 @@ function confirm() {
   if (!Object.values(routeParams?.params).includes(key)) {
     if (height.test(key)) {
       vueRouters.push({ path: `/${current}/block/${key}` });
-      setTimeout(() => {
-        closeSearchModal();
-      }, 1000);
+      closeSearchModal();
     } else if (txhash.test(key)) {
       vueRouters.push({ path: `/${current}/tx/${key}` });
-      setTimeout(() => {
-        closeSearchModal();
-      }, 1000);
-      //     this.$router.push({ name: 'transaction', params: { chain: c.chain_name, hash: key } })
+      closeSearchModal();
     } else if (addr.test(key)) {
       vueRouters.push({ path: `/${current}/account/${key}` });
-      setTimeout(() => {
-        closeSearchModal();
-      }, 1000);
+      closeSearchModal();
     } else {
       errorMessage.value = 'The input not recognized';
     }
