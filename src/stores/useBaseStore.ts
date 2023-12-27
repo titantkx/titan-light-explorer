@@ -12,7 +12,7 @@ export const useBaseStore = defineStore('baseStore', {
       earlest: {} as Block,
       latest: {} as Block,
       recents: [] as Block[],
-      fetched: false,
+      fetched: new Uint8Array(1),
       theme: (window.localStorage.getItem('theme') || 'dark') as
         | 'light'
         | 'dark',
@@ -77,8 +77,7 @@ export const useBaseStore = defineStore('baseStore', {
       this.recents = [];
     },
     async autoFetchLatest() {
-      if (!this.fetched) {
-        this.fetched = true;
+      if (Atomics.compareExchange(this.fetched, 0, 0, 1)) {
         return;
       }
       while (true) {
