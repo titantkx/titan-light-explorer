@@ -10,9 +10,7 @@ import 'vue-json-pretty/lib/styles.css';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-
 const props = defineProps(['hash', 'chain']);
-
 const blockchain = useBlockchain();
 const format = useFormatter();
 
@@ -56,14 +54,14 @@ const messages = computed(() => {
 const txhash = /^[A-Z\d]{64}$/;
 const ethTxHash = /^0x[a-fA-F0-9]{64}$/;
 
-load(props.hash);
+loadTx(props.hash);
 
 watch(route, () => {
   if (route.path.startsWith(`/${props.chain}/tx/`))
-    load(route.params['hash'] as string);
+    loadTx(route.params.hash as string);
 });
 
-function load(hash: string) {
+function loadTx(hash: string) {
   if (txhash.test(hash)) {
     blockchain.rpc
       .getTx(hash)
@@ -141,13 +139,21 @@ function load(hash: string) {
             <tr>
               <td>From Address</td>
               <td>
-                {{ ethTx.from }}
+                <RouterLink
+                  :to="`/${props.chain}/account/${ethTx.from}`"
+                  class="text-primary dark:invert"
+                  >{{ ethTx.from }}
+                </RouterLink>
               </td>
             </tr>
             <tr v-if="ethTx.to">
               <td>To Address</td>
               <td>
-                {{ ethTx.to }}
+                <RouterLink
+                  :to="`/${props.chain}/account/${ethTx.to}`"
+                  class="text-primary dark:invert"
+                  >{{ ethTx.to }}
+                </RouterLink>
               </td>
             </tr>
             <tr>
