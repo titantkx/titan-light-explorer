@@ -1,18 +1,9 @@
-import { defineStore } from 'pinia';
-import {
-  useDashboard,
-  type ChainConfig,
-  type Endpoint,
-  EndpointType,
-} from './useDashboard';
-import type {
-  NavGroup,
-  NavLink,
-  NavSectionTitle,
-  VerticalNavItems,
-} from '@/layouts/types';
-import { useRouter } from 'vue-router';
+import type { NavSectionTitle, VerticalNavItems } from '@/layouts/types';
 import { CosmosRestClient } from '@/libs/client';
+import { hexToRgb, rgbToHsl } from '@/libs/utils';
+import { useBlockModule } from '@/modules/[chain]/block/block';
+import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
 import {
   useBankStore,
   useBaseStore,
@@ -21,9 +12,12 @@ import {
   useStakingStore,
   useWalletStore,
 } from '.';
-import { useBlockModule } from '@/modules/[chain]/block/block';
-import { DEFAULT } from '@/libs';
-import { hexToRgb, rgbToHsl } from '@/libs/utils';
+import {
+  EndpointType,
+  useDashboard,
+  type ChainConfig,
+  type Endpoint,
+} from './useDashboard';
 
 export const useBlockchain = defineStore('blockchain', {
   state: () => {
@@ -65,7 +59,7 @@ export const useBlockchain = defineStore('blockchain', {
         if (this.current?.themeColor) {
           const { color } = hexToRgb(this.current?.themeColor);
           const { h, s, l } = rgbToHsl(color);
-          const themeColor = h + ' ' + s + '% ' + l +'%';
+          const themeColor = h + ' ' + s + '% ' + l + '%';
           document.body.style.setProperty('--p', `${themeColor}`);
           // document.body.style.setProperty('--p', `${this.current?.themeColor}`);
         } else {
@@ -98,10 +92,7 @@ export const useBlockchain = defineStore('blockchain', {
       }
 
       // combine all together
-      return [
-        ...currNavItem,
-        { heading: 'Ecosystem' } as NavSectionTitle,
-      ];
+      return [...currNavItem, { heading: 'Ecosystem' } as NavSectionTitle];
     },
   },
   actions: {
