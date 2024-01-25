@@ -8,9 +8,8 @@ import {
   useBankStore,
   useBaseStore,
   useGovStore,
-  useMintStore,
   useStakingStore,
-  useWalletStore,
+  useWalletStore
 } from '.';
 import {
   EndpointType,
@@ -107,7 +106,7 @@ export const useBlockchain = defineStore('blockchain', {
       useBankStore().initial();
       useBaseStore().initial();
       useGovStore().initial();
-      useMintStore().initial();
+      // useMintStore().initial();
       useBlockModule().initial();
     },
 

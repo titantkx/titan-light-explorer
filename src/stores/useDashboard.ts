@@ -106,7 +106,6 @@ export interface LocalConfig {
   coin_type: string;
   logo: string;
   theme_color?: string;
-  min_tx_fee: string;
   rpc: string[] | Endpoint[];
   json_rpc: string[];
   sdk_version: string;

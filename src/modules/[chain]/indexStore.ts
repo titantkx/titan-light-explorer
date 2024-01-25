@@ -1,13 +1,12 @@
 import {
+  useBankStore,
+  useBaseStore,
   useBlockchain,
   useCoingecko,
-  useBaseStore,
-  useBankStore,
   useFormatter,
   useGovStore,
 } from '@/stores';
 import { useDistributionStore } from '@/stores/useDistributionStore';
-import { useMintStore } from '@/stores/useMintStore';
 import { useStakingStore } from '@/stores/useStakingStore';
 import type { Coin, Tally } from '@/types';
 import numeral from 'numeral';
@@ -145,7 +144,7 @@ export const useIndexModule = defineStore('module-index', {
       const base = useBaseStore();
       const bank = useBankStore();
       const staking = useStakingStore();
-      const mintStore = useMintStore();
+      // const mintStore = useMintStore();
       const formatter = useFormatter();
 
       return [
@@ -185,7 +184,7 @@ export const useIndexModule = defineStore('module-index', {
           title: 'Inflation',
           color: 'success',
           icon: 'mdi-chart-multiple',
-          stats: formatter.formatDecimalToPercent(mintStore.inflation),
+          stats: formatter.formatDecimalToPercent('0'),
           change: 0,
         },
         {
@@ -204,7 +203,7 @@ export const useIndexModule = defineStore('module-index', {
     },
 
     coingeckoId() {
-      this.tickerIndex = 0;
+      this.tickerIndex = 0;      
       // @ts-ignore
       const [firstAsset] = this.blockchain?.assets || [];
       return firstAsset.coingecko_id
@@ -214,7 +213,7 @@ export const useIndexModule = defineStore('module-index', {
     async loadDashboard() {
       this.$reset();
       this.initCoingecko();
-      useMintStore().fetchInflation();
+      // useMintStore().fetchInflation();
       useDistributionStore()
         .fetchCommunityPool()
         .then((x) => {
