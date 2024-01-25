@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import {
-  useBlockchain,
-  useFormatter,
-  useMintStore,
-  useStakingStore,
-  useTxDialog,
-} from '@/stores';
-import { onMounted, computed, ref } from 'vue';
-import { Icon } from '@iconify/vue';
 import CommissionRate from '@/components/ValidatorCommissionRate.vue';
 import {
-  consensusPubkeyToHexAddress,
-  operatorAddressToAccount,
-  pubKeyToValcons,
-  valoperToPrefix,
+consensusPubkeyToHexAddress,
+operatorAddressToAccount,
+pubKeyToValcons,
+valoperToPrefix,
 } from '@/libs';
+import {
+useBlockchain,
+useFormatter,
+useStakingStore,
+useTxDialog
+} from '@/stores';
 import type { Coin, Delegation, PaginatedTxs, Validator } from '@/types';
+import { Icon } from '@iconify/vue';
+import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps(['validator', 'chain']);
 
@@ -60,10 +59,10 @@ blockchain.rpc.getTxsBySender(addresses.value.account).then((x) => {
 
 const apr = computed(() => {
   const rate = v.value.commission?.commission_rates.rate || 0;
-  const inflation = useMintStore().inflation;
-  if (Number(inflation)) {
-    return format.percent((1 - Number(rate)) * Number(inflation));
-  }
+  // const inflation = useMintStore().inflation;
+  // if (Number(inflation)) {
+  //   return format.percent((1 - Number(rate)) * Number(inflation));
+  // }
   return '-';
 });
 

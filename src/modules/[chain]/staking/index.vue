@@ -1,24 +1,23 @@
 <script lang="ts" setup>
+import { formatSeconds } from '@/libs/utils';
 import {
-    useBaseStore,
-    useBlockchain,
-    useFormatter,
-    useMintStore,
-    useStakingStore,
-    useTxDialog,
+useBaseStore,
+useBlockchain,
+useFormatter,
+useStakingStore,
+useTxDialog
 } from '@/stores';
+import type { Key, SlashingParam, Validator } from '@/types';
+import { Icon } from '@iconify/vue';
 import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
-import { Icon } from '@iconify/vue';
-import type { Key, SlashingParam, Validator } from '@/types';
-import { formatSeconds}  from '@/libs/utils'
 
 const staking = useStakingStore();
 const base = useBaseStore();
 const format = useFormatter();
 const dialog = useTxDialog();
 const chainStore = useBlockchain();
-const mintStore = useMintStore()
+// const mintStore = useMintStore()
 
 const cache = JSON.parse(localStorage.getItem('avatars') || '{}');
 const avatars = ref(cache || {});
@@ -195,7 +194,7 @@ loadAvatars();
                 </div>
             </span>
             <span>
-                <div class="font-bold">{{ format.percent(mintStore.inflation) }}</div>
+                <div class="font-bold">{{ format.percent('0') }}</div>
                 <div class="text-xs">{{ $t('staking.inflation') }}</div>
             </span>
         </div>
