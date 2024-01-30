@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed } from '@vue/reactivity';
-import MdEditor from 'md-editor-v3';
+import Countdown from '@/components/Countdown.vue';
+import PaginationBar from '@/components/PaginationBar.vue';
 import ObjectElement from '@/components/dynamic/ObjectElement.vue';
 import {
   useBaseStore,
@@ -16,11 +16,10 @@ import {
   type PaginatedProposalDeposit,
   type Pagination,
 } from '@/types';
-import { ref, reactive } from 'vue';
-import Countdown from '@/components/Countdown.vue';
-import PaginationBar from '@/components/PaginationBar.vue';
 import { fromBech32, toHex } from '@cosmjs/encoding';
-
+import { computed } from '@vue/reactivity';
+import MdEditor from 'md-editor-v3';
+import { reactive, ref } from 'vue';
 
 const props = defineProps(['proposal_id', 'chain']);
 const proposal = ref({} as GovProposal);
@@ -96,10 +95,10 @@ const total = computed(() => {
   const tally = proposal.value.final_tally_result;
   let sum = 0;
   if (tally) {
-    sum += Number(tally.abstain || 0);
-    sum += Number(tally.yes || 0);
-    sum += Number(tally.no || 0);
-    sum += Number(tally.no_with_veto || 0);
+    sum += Number(tally.abstain_count || 0);
+    sum += Number(tally.yes_count || 0);
+    sum += Number(tally.no_count || 0);
+    sum += Number(tally.no_with_veto_count || 0);
   }
   return sum;
 });
@@ -114,7 +113,7 @@ const turnout = computed(() => {
 
 const yes = computed(() => {
   if (total.value > 0) {
-    const yes = proposal.value?.final_tally_result?.yes || 0;
+    const yes = proposal.value?.final_tally_result?.yes_count || 0;
     return format.percent(Number(yes) / total.value);
   }
   return 0;
@@ -122,7 +121,7 @@ const yes = computed(() => {
 
 const no = computed(() => {
   if (total.value > 0) {
-    const value = proposal.value?.final_tally_result?.no || 0;
+    const value = proposal.value?.final_tally_result?.no_count || 0;
     return format.percent(Number(value) / total.value);
   }
   return 0;
@@ -130,7 +129,7 @@ const no = computed(() => {
 
 const veto = computed(() => {
   if (total.value > 0) {
-    const value = proposal.value?.final_tally_result?.no_with_veto || 0;
+    const value = proposal.value?.final_tally_result?.no_with_veto_count || 0;
     return format.percent(Number(value) / total.value);
   }
   return 0;
@@ -138,7 +137,7 @@ const veto = computed(() => {
 
 const abstain = computed(() => {
   if (total.value > 0) {
-    const value = proposal.value?.final_tally_result?.abstain || 0;
+    const value = proposal.value?.final_tally_result?.abstain_count || 0;
     return format.percent(Number(value) / total.value);
   }
   return 0;
@@ -252,7 +251,8 @@ function pageload(p: number) {
           <div class="flex items-center mb-4 mt-2">
             <div class="w-2 h-2 rounded-full bg-error mr-3"></div>
             <div class="text-base flex-1 text-main">
-              {{ $t('gov.submit_at') }}: {{ format.toDay(proposal.submit_time) }}
+              {{ $t('gov.submit_at') }}:
+              {{ format.toDay(proposal.submit_time) }}
             </div>
             <div class="text-sm">{{ shortTime(proposal.submit_time) }}</div>
           </div>
@@ -282,7 +282,8 @@ function pageload(p: number) {
             <div class="flex items-center">
               <div class="w-2 h-2 rounded-full bg-yes mr-3"></div>
               <div class="text-base flex-1 text-main">
-                {{ $t('gov.vote_start_from') }} {{ format.toDay(proposal.voting_start_time) }}
+                {{ $t('gov.vote_start_from') }}
+                {{ format.toDay(proposal.voting_start_time) }}
               </div>
               <div class="text-sm">
                 {{ shortTime(proposal.voting_start_time) }}
@@ -296,14 +297,16 @@ function pageload(p: number) {
             <div class="flex items-center mb-1">
               <div class="w-2 h-2 rounded-full bg-success mr-3"></div>
               <div class="text-base flex-1 text-main">
-                {{ $t('gov.vote_end') }} {{ format.toDay(proposal.voting_end_time) }}
+                {{ $t('gov.vote_end') }}
+                {{ format.toDay(proposal.voting_end_time) }}
               </div>
               <div class="text-sm">
                 {{ shortTime(proposal.voting_end_time) }}
               </div>
             </div>
             <div class="pl-5 text-sm">
-              {{ $t('gov.current_status') }}: {{ $t(`gov.proposal_statuses.${proposal.status}`) }}
+              {{ $t('gov.current_status') }}:
+              {{ $t(`gov.proposal_statuses.${proposal.status}`) }}
             </div>
           </div>
 
@@ -353,11 +356,18 @@ function pageload(p: number) {
               >
                 {{ String(item.option).replace('VOTE_OPTION_', '') }}
               </td>
-              <td
-                v-if="item.options"
-                class="py-2 text-sm"
-              >
-                {{ item.options.map(x => `${x.option.replace('VOTE_OPTION_', '')}:${format.percent(x.weight)}`).join(', ') }}
+              <td v-if="item.options" class="py-2 text-sm">
+                {{
+                  item.options
+                    .map(
+                      (x) =>
+                        `${x.option.replace(
+                          'VOTE_OPTION_',
+                          ''
+                        )}:${format.percent(x.weight)}`
+                    )
+                    .join(', ')
+                }}
               </td>
             </tr>
           </tbody>
