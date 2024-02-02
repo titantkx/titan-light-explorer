@@ -16,16 +16,16 @@ const props = defineProps({
 const total = computed(() => props.pool?.bonded_tokens);
 const format = useFormatter();
 const yes = computed(() =>
-  format.calculatePercent(props.tally?.yes, total.value)
+  format.calculatePercent(props.tally?.yes_count, total.value)
 );
 const no = computed(() =>
-  format.calculatePercent(props.tally?.no, total.value)
+  format.calculatePercent(props.tally?.no_count, total.value)
 );
 const abstain = computed(() =>
-  format.calculatePercent(props.tally?.abstain, total.value)
+  format.calculatePercent(props.tally?.abstain_count, total.value)
 );
 const veto = computed(() =>
-  format.calculatePercent(props.tally?.no_with_veto, total.value)
+  format.calculatePercent(props.tally?.no_with_veto_count, total.value)
 );
 </script>
 
