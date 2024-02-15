@@ -1,18 +1,18 @@
 {
   "chain_name": "Titan-testnet",
   "api": [
-    "https://titan-testnet-lcd-1.tokenize-dev.com",
-    "https://titan-testnet-lcd-2.tokenize-dev.com"
+    "https://titan-testnet-lcd-1.tokenize-dev.com:443",
+    "https://titan-testnet-lcd-2.tokenize-dev.com:443"
   ],
   "rpc": [
-    "https://titan-testnet-rpc-1.tokenize-dev.com",
-    "https://titan-testnet-rpc-2.tokenize-dev.com",
-    "https://titan-testnet-rpc-3.tokenize-dev.com",
-    "https://titan-testnet-rpc-4.tokenize-dev.com"
+    "https://titan-testnet-rpc-1.tokenize-dev.com:443",
+    "https://titan-testnet-rpc-2.tokenize-dev.com:443",
+    "https://titan-testnet-rpc-3.tokenize-dev.com:443",
+    "https://titan-testnet-rpc-4.tokenize-dev.com:443"
   ],
   "json_rpc": [
-    "https://titan-testnet-json-rpc-1.tokenize-dev.com",
-    "https://titan-testnet-json-rpc-2.tokenize-dev.com"
+    "https://titan-testnet-json-rpc-1.tokenize-dev.com:443",
+    "https://titan-testnet-json-rpc-2.tokenize-dev.com:443"
   ],
   "sdk_version": "0.47.7",
   "coin_type": "60",
