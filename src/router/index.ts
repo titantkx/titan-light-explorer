@@ -10,7 +10,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/Titan-testnet',
+      redirect: '/Titan%20Testnet',
     },
     ...setupLayouts(routes),
   ],
