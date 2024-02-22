@@ -1,5 +1,5 @@
 {
-  "chain_name": "Titan-testnet",
+  "chain_name": "Titan Testnet",
   "api": [
     "https://titan-testnet-lcd-1.tokenize-dev.com:443",
     "https://titan-testnet-lcd-2.tokenize-dev.com:443"
@@ -23,17 +23,17 @@
       "base": "atkx",
       "symbol": "TKX",
       "exponent": "18",
-      "coingecko_id": "tokenize-xchange",
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
     }
   ],
   "keplr_price_step": {
     "low": 100000000000,
-    "average": 110000000000,
-    "high": 200000000000
+    "average": 100000000000,
+    "high": 100000000000
   },
   "theme_color": "#FF671E",
   "keplr_features": [
+    "cosmwasm",
     "ibc-transfer",
     "ibc-go",
     "eth-address-gen",
