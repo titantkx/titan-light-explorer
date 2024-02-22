@@ -28,8 +28,8 @@
   ],
   "keplr_price_step": {
     "low": 100000000000,
-    "average": 100000000000,
-    "high": 100000000000
+    "average": 110000000000,
+    "high": 200000000000
   },
   "theme_color": "#FF671E",
   "keplr_features": [
