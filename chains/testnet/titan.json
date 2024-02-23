@@ -14,7 +14,7 @@
     "https://titan-testnet-json-rpc-1.tokenize-dev.com:443",
     "https://titan-testnet-json-rpc-2.tokenize-dev.com:443"
   ],
-  "sdk_version": "0.47.7",
+  "sdk_version": "v0.47.6-titan.3",
   "coin_type": "60",
   "addr_prefix": "titan",
   "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg",
@@ -34,8 +34,6 @@
   "theme_color": "#FF671E",
   "keplr_features": [
     "cosmwasm",
-    "ibc-transfer",
-    "ibc-go",
     "eth-address-gen",
     "eth-key-sign"
   ]
