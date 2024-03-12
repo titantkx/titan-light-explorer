@@ -1,7 +1,7 @@
-import { useBlockchain } from '@/stores';
+import { useBlockchain, useFormatter } from '@/stores';
 import numeral from 'numeral';
 
-const chainStore = useBlockchain()
+const chainStore = useBlockchain();
 
 const themeColors = (theme: string) => {
   if (theme === 'light') {
@@ -260,16 +260,58 @@ export const getMarketPriceChartConfig = (
 };
 
 // const donutColors = Array.from({length: 19}, () => (`#${Math.floor(Math.random()*16777215+100000).toString(16)}`))
-const donutColors = ["#bbe81a", "#ff5f0b", "#43ebef", "#1999e5", "#230b2c", "#628be8", "#aa5343", "#c9fa89", "#e88ea8", "#72e4a2", "#38cd87", "#515e13", "#7bf8f5", "#83dd6e", "#e8b203", "#7d11d5", "#3e4927", "#f303e2", "#249493", "#50e5e6", "#11deb2", "#a2f9c7", "#2a7bdc", "#47383a", "#226da4", "#966319", "#1bdf99", "#f3ab0c", "#961f50", "#832efd", "#875287", "#4bebe7", "#1d3d2e", "#9caea4", "#2772f5", "#938bf1", "#6228a5", "#24fea5", "#c9bbc8", "#e27225", "#54bd9f", "#babb2d", "#bcf591", "#803b36", "#124f03"]
+const donutColors = [
+  '#bbe81a',
+  '#ff5f0b',
+  '#43ebef',
+  '#1999e5',
+  '#230b2c',
+  '#628be8',
+  '#aa5343',
+  '#c9fa89',
+  '#e88ea8',
+  '#72e4a2',
+  '#38cd87',
+  '#515e13',
+  '#7bf8f5',
+  '#83dd6e',
+  '#e8b203',
+  '#7d11d5',
+  '#3e4927',
+  '#f303e2',
+  '#249493',
+  '#50e5e6',
+  '#11deb2',
+  '#a2f9c7',
+  '#2a7bdc',
+  '#47383a',
+  '#226da4',
+  '#966319',
+  '#1bdf99',
+  '#f3ab0c',
+  '#961f50',
+  '#832efd',
+  '#875287',
+  '#4bebe7',
+  '#1d3d2e',
+  '#9caea4',
+  '#2772f5',
+  '#938bf1',
+  '#6228a5',
+  '#24fea5',
+  '#c9bbc8',
+  '#e27225',
+  '#54bd9f',
+  '#babb2d',
+  '#bcf591',
+  '#803b36',
+  '#124f03',
+];
 
-
-export const getDonutChartConfig = (
-  theme: string,
-  labels: string[]
-) => {
-
+export const getDonutChartConfig = (theme: string, labels: string[]) => {
   const { themeSecondaryTextColor, themePrimaryTextColor } =
     colorVariables(theme);
+  const format = useFormatter();
 
   return {
     stroke: { width: 0 },
@@ -284,6 +326,9 @@ export const getDonutChartConfig = (
     dataLabels: {
       enabled: true,
       formatter: (val: string) => `${parseInt(val, 10)}%`,
+    },
+    tooltip: {
+      enabled: false,
     },
     legend: {
       position: 'bottom',
@@ -305,7 +350,8 @@ export const getDonutChartConfig = (
             value: {
               fontSize: '1.5rem',
               color: themeSecondaryTextColor,
-              formatter: (val: string) => `${parseInt(val, 10)}`,
+              formatter: (val: string) =>
+                `${format.formatToken({ denom: 'atkx', amount: val })}`,
             },
             total: {
               show: false,
@@ -359,4 +405,3 @@ export const getDonutChartConfig = (
     ],
   };
 };
-
