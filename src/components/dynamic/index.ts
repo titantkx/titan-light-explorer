@@ -1,11 +1,11 @@
-import ObjectElement from './ObjectElement.vue';
-import TextElement from './TextElement.vue';
-import ArrayElement from './ArrayElement.vue';
-import UInt8Array from './UInt8Array.vue';
-import NumberElement from './NumberElement.vue';
-import TokenElement from './TokenElement.vue';
-import ObjectHorizontalElement from './ObjectHorizontalElement.vue';
 import Long from 'long';
+import ArrayElement from './ArrayElement.vue';
+import NumberElement from './NumberElement.vue';
+import ObjectElement from './ObjectElement.vue';
+import ObjectHorizontalElement from './ObjectHorizontalElement.vue';
+import TextElement from './TextElement.vue';
+import TokenElement from './TokenElement.vue';
+import UInt8Array from './UInt8Array.vue';
 
 export function select(v: any, direct?: string) {
   // if(k === 'txs' && v) {
@@ -31,7 +31,9 @@ function selectObject(v: Object, direct?: string) {
       return UInt8Array;
     case Array.isArray(v):
       return ArrayElement;
-    case v && Object.keys(v).includes('amount') && Object.keys(v).includes('denom'): {
+    case v &&
+      Object.keys(v).includes('amount') &&
+      Object.keys(v).includes('denom'): {
       return TokenElement;
     }
     case direct === 'horizontal':
