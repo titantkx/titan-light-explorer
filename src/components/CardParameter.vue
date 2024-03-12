@@ -11,7 +11,7 @@ const props = defineProps({
 const formatter = useFormatter();
 function calculateValue(value: any) {
   if (Array.isArray(value)) {
-    return (value[0] && value[0].amount) || '-';
+    return (value[0] && formatter.formatToken(value[0])) || '-';
   }
   if(String(value).search(/^\d+s$/g) > -1) {
     return formatSeconds(value)
