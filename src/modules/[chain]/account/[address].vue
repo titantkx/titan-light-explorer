@@ -50,6 +50,7 @@ const rewards = ref({} as DelegatorRewards);
 const balances = ref([] as Coin[]);
 const unbonding = ref([] as UnbondingResponses[]);
 const unbondingTotal = ref(0);
+const showCopyToast = ref(0);
 
 const totalAmountByCategory = computed(() => {
   let sumDel = 0;
@@ -146,6 +147,46 @@ function updateEvent() {
       : props.address
   );
 }
+
+function findField(v: any, field: string) {
+    if(!v || Array.isArray(v) || typeof v === 'string') return null
+    const fields = Object.keys(v)
+    if(fields.includes(field)) {
+        return v[field]
+    }
+    for(let i= 0; i < fields.length; i++) {
+        const re: any = findField(v[fields[i]], field)
+        if(re) return re
+    }
+}
+
+function showAddress(v: any) {
+    return findField(v, 'address')
+}
+
+const copyWebsite = async (url: string) => {
+  if (!url) {
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    showCopyToast.value = 1;
+    setTimeout(() => {
+      showCopyToast.value = 0;
+    }, 1000);
+  } catch (err) {
+    showCopyToast.value = 2;
+    setTimeout(() => {
+      showCopyToast.value = 0;
+    }, 1000);
+  }
+};
+const tipMsg = computed(() => {
+  return showCopyToast.value === 2
+    ? { class: 'error', msg: 'Copy Error!' }
+    : { class: 'success', msg: 'Copy Success!' };
+});
+
 </script>
 <template>
   <div v-if="account">
@@ -168,12 +209,32 @@ function updateEvent() {
           </div>
         </div>
         <!-- content -->
-        <div class="flex flex-1 flex-col truncate pl-4">
+        <div class="flex flex-1 truncate pl-4">
           <h2 class="text-sm card-title">{{ $t('account.address') }}:</h2>
-          <span class="text-xs truncate"> {{ account.address }}</span>
-          <span v-if="account.address" class="text-xs truncate">
-            {{ toEthAddr(account.address) }}</span
-          >
+          <div class="flex flex-1 flex-col pl-4 gap-y-1">
+            <div class="flex gap-x-1">
+              <span class="text-xs truncate"> {{ showAddress(account) }}</span>   
+               <Icon
+                  icon="mdi:content-copy"
+                  class="ml-2 cursor-pointer"
+                  v-show="showAddress(account)"
+                  @click="copyWebsite(showAddress(account) || '')"
+                />
+            </div>
+           
+            <div class="flex gap-x-1">
+              <span v-if="showAddress(account)" class="text-xs truncate">
+                {{ toEthAddr(showAddress(account)) }}</span
+              >
+              <Icon
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="showAddress(account)"
+                @click="copyWebsite(toEthAddr(showAddress(account)) || '')"
+              />
+            </div>
+          </div>
+         
         </div>
       </div>
     </div>
@@ -610,6 +671,22 @@ function updateEvent() {
     <div class="bg-base-100 px-4 pt-3 pb-4 rounded mb-4 shadow">
       <h2 class="card-title mb-4">{{ $t('account.acc') }}</h2>
       <DynamicComponent :value="account" />
+    </div>
+
+    <!-- toast message -->
+    <div class="toast" v-show="showCopyToast === 1">
+      <div class="alert alert-success">
+        <div class="text-xs md:!text-sm">
+          <span>{{ tipMsg.msg }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="toast" v-show="showCopyToast === 2">
+      <div class="alert alert-error">
+        <div class="text-xs md:!text-sm">
+          <span>{{ tipMsg.msg }}</span>
+        </div>
+      </div>
     </div>
   </div>
   <div v-else class="text-no text-sm">{{ $t('account.error') }}</div>
