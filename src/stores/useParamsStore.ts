@@ -1,6 +1,6 @@
+import { formatNumber, formatTokenAmount, percent } from '@/libs/utils';
 import { defineStore } from 'pinia';
 import { useBlockchain } from './useBlockchain';
-import { percent, formatNumber, formatTokenAmount } from '@/libs/utils';
 export interface stakingItem {
   unbonding_time: string;
   max_validators: number;
@@ -72,6 +72,14 @@ export const useParamStore = defineStore('paramstore', {
       title: 'Node Information',
       items: {},
     },
+    validatorReward: {
+      title: 'Validator Reward',
+      items: [] as Array<any>,
+    },
+    feeMarket: {
+      title: 'Fee Market',
+      items: [] as Array<any>,
+    },
   }),
   getters: {
     blockchain() {
@@ -87,6 +95,8 @@ export const useParamStore = defineStore('paramstore', {
       this.handleDistributionParams();
       this.handleGovernanceParams();
       this.handleAbciInfo();
+      this.handleValidatorReward();
+      this.handleFeeMarket();
     },
     async handleBaseBlockLatest() {
       try {
@@ -200,6 +210,24 @@ export const useParamStore = defineStore('paramstore', {
         ([key, value]) => ({ subtitle: key, value: value })
       );
     },
+    async handleValidatorReward() {
+      const res = await this.getValidatorReward();
+      this.validatorReward.items = Object.entries(res.params)
+        .filter(([key, value]) => key !== 'authority')
+        .map(([key, value]) => ({
+          subtitle: key,
+          value: value,
+        }));
+    },
+    async handleFeeMarket() {
+      const res = await this.getFeeMarket();
+      this.feeMarket.items = Object.entries(res.params)
+        .filter(([key, value]) => key !== 'enable_height')
+        .map(([key, value]) => ({
+          subtitle: key,
+          value: value,
+        }));
+    },
     async getBaseTendermintBlockLatest() {
       return await this.blockchain.rpc?.getBaseBlockLatest();
     },
@@ -239,6 +267,12 @@ export const useParamStore = defineStore('paramstore', {
     },
     async fetchAbciInfo() {
       return this.blockchain.rpc?.getBaseNodeInfo();
+    },
+    async getValidatorReward() {
+      return await this.blockchain.rpc?.getValidatorReward();
+    },
+    async getFeeMarket() {
+      return await this.blockchain.rpc?.getFeeMarket();
     },
   },
 });
