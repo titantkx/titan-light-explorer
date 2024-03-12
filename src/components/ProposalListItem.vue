@@ -6,8 +6,8 @@ import {
   useTxDialog,
 } from '@/stores';
 import { select } from '@/components/dynamic/index';
-import type { PaginatedProposals } from '@/types';
 import ProposalProcess from './ProposalProcess.vue';
+import type { PaginatedProposals } from '@/types';
 import type { PropType } from 'vue';
 import { ref } from 'vue';
 const dialog = useTxDialog();
@@ -38,6 +38,7 @@ const voterStatusMap: Record<string, string> = {
 };
 
 const proposalInfo = ref();
+
 </script>
 <template>
   <div class="bg-white dark:bg-[#28334e] rounded text-sm">
