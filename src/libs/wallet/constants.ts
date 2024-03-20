@@ -16,6 +16,8 @@ export const initListWallet = [
 ];
 
 export enum ERROR_MESSAGE {
-  INVALID_CHAIN = 'Invalid chain id',
+  INVALID_CHAIN = 'invalid chain',
+  NO_CHAIN = 'no chain',
+  INSTALL_KEPLR = 'install keplr',
   ENDPOINT_NOT_SET = 'Endpoint does not set',
 }

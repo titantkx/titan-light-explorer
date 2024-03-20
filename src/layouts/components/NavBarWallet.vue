@@ -87,12 +87,6 @@ function selectWallet(wallet: WalletName) {
 async function initData() {}
 
 async function checkWalletBeforeConnect() {
-  if (name.value === WalletName.Keplr) {
-    if (!window.keplr) {
-      return window.open('https://www.keplr.app/download');
-    }
-  }
-
   if (name.value === WalletName.Metamask) {
     if (!(window as any).ethereum) {
       return window.open(
@@ -114,6 +108,7 @@ async function initParamsForKeplr() {
   const chain = selected.value;
   if (!chain.endpoints?.rest?.at(0))
     throw new Error(ERROR_MESSAGE.ENDPOINT_NOT_SET);
+
   const client = CosmosRestClient.newDefault(
     chain.endpoints.rest?.at(0)?.address || ''
   );
@@ -335,7 +330,10 @@ async function connect() {
         open.value = false;
       })
       .catch((e) => {
-        if (e.message === ERROR_MESSAGE.INVALID_CHAIN) {
+        if (
+          e.message.includes(ERROR_MESSAGE.INVALID_CHAIN) ||
+          e.message.includes(ERROR_MESSAGE.NO_CHAIN)
+        ) {
           if (name.value === WalletName.Leap) {
             (window as any).leap
               .experimentalSuggestChain(JSON.parse(conf.value))
@@ -346,7 +344,7 @@ async function connect() {
           }
 
           if (name.value === WalletName.Keplr) {
-            (window as any).leap
+            (window as any).keplr
               .experimentalSuggestChain(JSON.parse(conf.value))
               .catch((e: any) => {
                 error.value = e;
@@ -354,9 +352,13 @@ async function connect() {
             return;
           }
         }
+
         error.value = e;
       });
   } catch (e: any) {
+    if (e.message.includes(ERROR_MESSAGE.INSTALL_KEPLR)) {
+      window.open('https://www.keplr.app/download');
+    }
     error.value = e.message;
   }
   sending.value = false;
