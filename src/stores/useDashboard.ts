@@ -325,6 +325,7 @@ export const useDashboard = defineStore('dashboard', {
       }
     },
     async loadingFromLocal() {
+      this.networkType = NetworkType.Mainnet;
       if (window.location.hostname.search('testnet') > -1) {
         this.networkType = NetworkType.Testnet;
       }
