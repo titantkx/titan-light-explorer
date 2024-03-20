@@ -6,7 +6,10 @@ import { setupLayouts } from 'virtual:generated-layouts';
 import routes from '~pages';
 
 var networkType = 'mainnet';
-if (window.location.hostname.search('testnet') > -1) {
+if (
+  window.location.hostname.search('testnet') > -1 ||
+  window.location.hostname.search('localhost') > -1
+) {
   networkType = 'testnet';
 }
 
