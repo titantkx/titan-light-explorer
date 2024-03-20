@@ -271,13 +271,24 @@ async function initForMetamask() {
       (x) => x.denom === chain.assets[0].symbol.toLowerCase()
     )?.exponent || 6;
 
+  // Process rename `Titan Testnet` to `Titan (TKX) Testnet`
+  // and `Titan` to `Titan (TKX)`
+  let chainName = chain.chainName;
+  switch (chain.chainName) {
+    case 'Titan Testnet':
+      chainName = 'Titan (TKX) Testnet';
+      break;
+    case 'Titan':
+      chainName = 'Titan (TKX)';
+      break;
+    default:
+      break;
+  }
+
   conf.value = JSON.stringify(
     {
       chainId: chainIdHex,
-      chainName:
-        chain.chainName === 'Titan Testnet'
-          ? 'Titan (TKX) Testnet'
-          : chain.chainName,
+      chainName,
       rpcUrls: chain.jsonRpc,
       iconUrls: [chain.logo],
       nativeCurrency: {
@@ -285,9 +296,7 @@ async function initForMetamask() {
         symbol: chain.assets[0].symbol,
         decimals: coinDecimals,
       },
-      blockExplorerUrls: [
-        'https://titan-testnet-explorer-light.titanlab.io',
-      ],
+      blockExplorerUrls: ['https://titan-testnet-explorer-light.titanlab.io'],
     },
     null,
     '\t'
