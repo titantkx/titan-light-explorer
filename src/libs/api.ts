@@ -197,6 +197,11 @@ export const DEFAULT: RequestRegistry = {
     adapter,
   },
 
+  validator_reward_pool: {
+    url: '/tokenize-titan/titan/validatorreward/reward_pool',
+    adapter,
+  },
+
   fee_market_params: {
     url: '/ethermint/feemarket/v1/params',
     adapter,

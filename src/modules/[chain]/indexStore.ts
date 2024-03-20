@@ -5,6 +5,7 @@ import {
   useCoingecko,
   useFormatter,
   useGovStore,
+  useParamStore,
 } from '@/stores';
 import { useDistributionStore } from '@/stores/useDistributionStore';
 import { useStakingStore } from '@/stores/useStakingStore';
@@ -146,6 +147,7 @@ export const useIndexModule = defineStore('module-index', {
       const staking = useStakingStore();
       // const mintStore = useMintStore();
       const formatter = useFormatter();
+      const paramStore = useParamStore();
 
       return [
         {
@@ -183,10 +185,12 @@ export const useIndexModule = defineStore('module-index', {
           change: 0,
         },
         {
-          title: 'Inflation',
+          title: 'Validator reward',
           color: 'success',
           icon: 'mdi-chart-multiple',
-          stats: formatter.formatDecimalToPercent('0'),
+          stats: formatter.formatDecimalToPercent(
+            paramStore.validatorReward?.items[0]?.value || 0
+          ),
           change: 0,
         },
         {

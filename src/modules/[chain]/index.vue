@@ -35,6 +35,7 @@ const coinInfo = computed(() => {
 onMounted(() => {
   store.loadDashboard();
   walletStore.loadMyAsset();
+  paramStore.initial();
   paramStore.handleAbciInfo();
   // if(!(coinInfo.value && coinInfo.value.name)) {
   // }
