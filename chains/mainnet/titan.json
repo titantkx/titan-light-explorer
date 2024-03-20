@@ -1,20 +1,15 @@
 {
-  "chain_name": "Titan Testnet",
+  "chain_name": "Titan",
   "api": [
-    "https://titan-testnet-lcd-1.titanlab.io:443",
-    "https://titan-testnet-lcd-2.titanlab.io:443"
+    "https://titan-lcd.titanlab.io:443"
   ],
   "rpc": [
-    "https://titan-testnet-rpc-1.titanlab.io:443",
-    "https://titan-testnet-rpc-2.titanlab.io:443",
-    "https://titan-testnet-rpc-3.titanlab.io:443",
-    "https://titan-testnet-rpc-4.titanlab.io:443"
+    "https://titan-rpc.titanlab.io:443"
   ],
   "json_rpc": [
-    "https://titan-testnet-json-rpc-1.titanlab.io:443",
-    "https://titan-testnet-json-rpc-2.titanlab.io:443"
+    "https://titan-json-rpc.titanlab.io:443"
   ],
-  "sdk_version": "v0.47.6-titan.3",
+  "sdk_version": "v0.47.6-titan.4",
   "coin_type": "60",
   "addr_prefix": "titan",
   "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg",
@@ -23,6 +18,7 @@
       "base": "atkx",
       "symbol": "TKX",
       "exponent": "18",
+      "coingecko_id": "tokenize-xchange",
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
     }
   ],

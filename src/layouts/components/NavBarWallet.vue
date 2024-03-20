@@ -96,7 +96,7 @@ async function checkWalletBeforeConnect() {
   if (name.value === WalletName.Metamask) {
     if (!(window as any).ethereum) {
       return window.open(
-        'https://metamask.app.link/dapp/titan-testnet-explorer-light.tokenize-dev.com'
+        'https://metamask.app.link/dapp/titan-testnet-explorer-light.titanlab.io'
       );
     }
   }
@@ -286,7 +286,7 @@ async function initForMetamask() {
         decimals: coinDecimals,
       },
       blockExplorerUrls: [
-        'https://titan-testnet-explorer-light.tokenize-dev.com',
+        'https://titan-testnet-explorer-light.titanlab.io',
       ],
     },
     null,
