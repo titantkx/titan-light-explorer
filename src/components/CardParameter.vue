@@ -10,13 +10,17 @@ const props = defineProps({
 
 const formatter = useFormatter();
 function calculateValue(value: any) {
+ 
   if (Array.isArray(value)) {
     return (value[0] && formatter.formatToken(value[0])) || '-';
   }
+    
   if(String(value).search(/^\d+s$/g) > -1) {
     return formatSeconds(value)
   }
+
   const newValue = Number(value);
+
   if (`${newValue}` === 'NaN' || typeof value === 'boolean') {
     return value;
   }
@@ -24,6 +28,7 @@ function calculateValue(value: any) {
   if (newValue < 1 && newValue > 0) {
     return formatter.formatDecimalToPercent(value);
   }
+
   return newValue;
 }
 

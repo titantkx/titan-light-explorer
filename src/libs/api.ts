@@ -1,7 +1,4 @@
-import {
-  type RequestRegistry,
-  adapter,
-} from './registry';
+import { adapter, type RequestRegistry } from './registry';
 
 export const DEFAULT: RequestRegistry = {
   auth_params: { url: '/cosmos/auth/v1beta1/params', adapter },
@@ -192,6 +189,16 @@ export const DEFAULT: RequestRegistry = {
   },
   interchain_security_ccv_provider_validator_consumer_addr: {
     url: '/interchain_security/ccv/provider/validator_consumer_addr?provider_address={provider_address}&chain_id={chain_id}',
+    adapter,
+  },
+
+  validator_reward_params: {
+    url: '/tokenize-titan/titan/validatorreward/params',
+    adapter,
+  },
+
+  fee_market_params: {
+    url: '/ethermint/feemarket/v1/params',
     adapter,
   },
 };
