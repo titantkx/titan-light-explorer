@@ -193,12 +193,12 @@ export const DEFAULT: RequestRegistry = {
   },
 
   validator_reward_params: {
-    url: '/tokenize-titan/titan/validatorreward/params',
+    url: '/titantkx/titan/validatorreward/params',
     adapter,
   },
 
   validator_reward_pool: {
-    url: '/tokenize-titan/titan/validatorreward/reward_pool',
+    url: '/titantkx/titan/validatorreward/reward_pool',
     adapter,
   },
 
