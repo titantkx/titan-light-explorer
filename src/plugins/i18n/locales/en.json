@@ -216,7 +216,9 @@
     "operator_addr": "Operator Address",
     "hex_addr": "Hex Address",
     "signer_addr": "Signer Address",
-    "consensus_pub_key": "Consensus Public Key"
+    "consensus_pub_key": "Consensus Public Key",
+    "validator_reward": "Validator Reward",
+    "validator_reward_pool": "Validator Reward Pool"
   },
   "statesync": {
     "title": "What's State Sync?",
