@@ -76,6 +76,10 @@ export const useParamStore = defineStore('paramstore', {
       title: 'Validator Reward',
       items: [] as Array<any>,
     },
+    validatorRewardPool: {
+      title: 'Validator Reward Pool',
+      items: [] as Array<{ denom: string; amount: string }>,
+    },
     feeMarket: {
       title: 'Fee Market',
       items: [] as Array<any>,
@@ -97,6 +101,7 @@ export const useParamStore = defineStore('paramstore', {
       this.handleAbciInfo();
       this.handleValidatorReward();
       this.handleFeeMarket();
+      this.handleValidatorRewardPool();
     },
     async handleBaseBlockLatest() {
       try {
@@ -219,6 +224,10 @@ export const useParamStore = defineStore('paramstore', {
           value: value,
         }));
     },
+    async handleValidatorRewardPool() {
+      const res = await this.getValidatorRewardPool();
+      this.validatorRewardPool.items = res?.pool;
+    },
     async handleFeeMarket() {
       const res = await this.getFeeMarket();
       this.feeMarket.items = Object.entries(res.params)
@@ -270,6 +279,9 @@ export const useParamStore = defineStore('paramstore', {
     },
     async getValidatorReward() {
       return await this.blockchain.rpc?.getValidatorReward();
+    },
+    async getValidatorRewardPool() {
+      return await this.blockchain.rpc?.getValidatorRewardPool();
     },
     async getFeeMarket() {
       return await this.blockchain.rpc?.getFeeMarket();

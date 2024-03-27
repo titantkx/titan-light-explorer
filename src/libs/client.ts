@@ -371,6 +371,10 @@ export class CosmosRestClient extends BaseRestClient<RequestRegistry> {
     return this.request(this.registry.validator_reward_params, {});
   }
 
+  async getValidatorRewardPool() {
+    return this.request(this.registry.validator_reward_pool, {});
+  }
+
   async getFeeMarket() {
     return this.request(this.registry.fee_market_params, {});
   }
