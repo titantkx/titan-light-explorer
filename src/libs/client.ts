@@ -365,6 +365,11 @@ export class CosmosRestClient extends BaseRestClient<RequestRegistry> {
       { chain_id, provider_address }
     );
   }
+  async getIBCClientStatusByClientId(client_id: string) {
+    return this.request(this.registry.ibc_core_client_status_client_id, {
+      client_id,
+    });
+  }
 
   // Parameters
   async getValidatorReward() {

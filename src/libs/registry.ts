@@ -157,7 +157,10 @@ export interface RequestRegistry extends AbstractRegistry {
     consumer_address: string;
   }>;
 
+  ibc_core_client_status_client_id: Request<{ status: string }>;
+
   validator_reward_params: Request<ValidatorRewardParam>;
+  validator_reward_pool: Request<ValidatorRewardParam>;
   fee_market_params: Request<FeeMarketParam>;
 }
 
