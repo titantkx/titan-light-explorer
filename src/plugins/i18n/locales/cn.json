@@ -105,6 +105,7 @@
     "code_hash": "代码哈希",
     "creator": "创建人",
     "permissions": "权限",
+    "btn_next_page": "下一页",
     "btn_up_sc": "上传合约",
     "contract_list_code": "合约列表",
     "contract_list": "合约",

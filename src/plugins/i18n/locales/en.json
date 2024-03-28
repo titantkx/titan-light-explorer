@@ -104,6 +104,7 @@
     "code_hash": "Code Hash",
     "creator": "Creator",
     "permissions": "Permissions",
+    "btn_next_page": "Next Page",
     "btn_up_sc": "Upload Smart Contract",
     "contract_list_code": "Contract List of Code",
     "contract_list": "Contract List",

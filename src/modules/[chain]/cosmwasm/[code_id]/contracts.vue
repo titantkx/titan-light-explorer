@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import { useWasmStore } from '../WasmStore';
-import { ref } from 'vue';
-import type {
-  ContractInfo,
-  PaginabledContracts,
-} from '../types';
 import DynamicComponent from '@/components/dynamic/DynamicComponent.vue';
-import PaginationBar from '@/components/PaginationBar.vue';
-import { PageRequest } from '@/types';
 import { useTxDialog } from '@/stores';
+import { PageRequest } from '@/types';
+import { ref } from 'vue';
+import { useWasmStore } from '../WasmStore';
+import type { ContractInfo, PaginabledContracts } from '../types';
 
 const props = defineProps(['code_id', 'chain']);
 
@@ -19,34 +15,34 @@ const info = ref({} as ContractInfo);
 const dialog = useTxDialog();
 const infoDialog = ref(false);
 const wasmStore = useWasmStore();
-function loadContract(pageNum: number) {
+function loadContract(key?: string) {
   const pr = new PageRequest();
-  pr.setPage(pageNum);
-  if(String(props.code_id).search(/^[\d]+$/) > -1){
+  pr.count_total = false;
+  pr.key = key;
+  if (String(props.code_id).search(/^[\d]+$/) > -1) {
     // query with code id
     wasmStore.wasmClient.getWasmCodeContracts(props.code_id, pr).then((x) => {
       response.value = x;
-    })
+    });
   } else {
     // query by creator
-    wasmStore.wasmClient.getWasmContractsByCreator(props.code_id, pr).then((x) => {
-      response.value = {
-        contracts: x.contract_addresses,
-        pagination: x.pagination,
-      };
-    })
+    wasmStore.wasmClient
+      .getWasmContractsByCreator(props.code_id, pr)
+      .then((x) => {
+        response.value = {
+          contracts: x.contract_addresses,
+          pagination: x.pagination,
+        };
+      });
   }
 }
-loadContract(1);
-
-
+loadContract();
 
 function showInfo(address: string) {
   wasmStore.wasmClient.getWasmContracts(address).then((x) => {
     info.value = x.contract_info;
   });
 }
-
 </script>
 <template>
   <div>
@@ -58,7 +54,9 @@ function showInfo(address: string) {
         <table class="table table-compact w-full mt-4">
           <thead>
             <tr>
-              <th style="position: relative; z-index: 2">{{ $t('cosmwasm.contract_list') }}</th>
+              <th style="position: relative; z-index: 2">
+                {{ $t('cosmwasm.contract_list') }}
+              </th>
               <th>{{ $t('account.action') }}</th>
             </tr>
           </thead>
@@ -80,18 +78,19 @@ function showInfo(address: string) {
                   :to="`transactions?contract=${v}`"
                   class="btn btn-primary btn-xs text-xs"
                 >
-                {{ $t('cosmwasm.btn_details') }}
+                  {{ $t('cosmwasm.btn_details') }}
                 </RouterLink>
               </td>
             </tr>
           </tbody>
         </table>
         <div class="flex justify-between">
-          <PaginationBar
-            :limit="pageRequest.limit"
-            :total="response.pagination?.total"
-            :callback="loadContract"
-          />
+          <label
+            class="btn btn-primary my-5"
+            @click="loadContract(response.pagination.next_key)"
+          >
+            {{ $t('cosmwasm.btn_next_page') }}
+          </label>
           <label
             for="wasm_instantiate_contract"
             class="btn btn-primary my-5"
@@ -125,6 +124,5 @@ function showInfo(address: string) {
         </div>
       </label>
     </label>
-
   </div>
 </template>
