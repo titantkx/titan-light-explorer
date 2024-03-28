@@ -14,7 +14,6 @@ import type {
   PaginatedTxs,
   Tx,
   TxResponse,
-  ValidatorRewardParam,
 } from '@/types';
 import type {
   BankParams,
@@ -31,8 +30,8 @@ import type {
   GovProposal,
   GovVote,
   PaginatedProposalDeposit,
-  PaginatedProposals,
   PaginatedProposalVotes,
+  PaginatedProposals,
   Tally,
 } from '@/types/gov';
 import type { PaginatedSigningInfo, SlashingParam } from '@/types/slashing';
@@ -46,6 +45,10 @@ import type {
   StakingPool,
   Validator,
 } from '@/types/staking';
+import type {
+  ValidatorRewardParam,
+  ValidatorRewardPool,
+} from '@/types/validatorReward';
 import semver from 'semver';
 export interface Request<T> {
   url: string;
@@ -160,7 +163,7 @@ export interface RequestRegistry extends AbstractRegistry {
   ibc_core_client_status_client_id: Request<{ status: string }>;
 
   validator_reward_params: Request<ValidatorRewardParam>;
-  validator_reward_pool: Request<ValidatorRewardParam>;
+  validator_reward_pool: Request<ValidatorRewardPool>;
   fee_market_params: Request<FeeMarketParam>;
 }
 
