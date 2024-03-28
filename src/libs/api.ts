@@ -192,6 +192,11 @@ export const DEFAULT: RequestRegistry = {
     adapter,
   },
 
+  ibc_core_client_status_client_id: {
+    url: '/ibc/core/client/v1/client_status/{client_id}',
+    adapter,
+  },
+
   validator_reward_params: {
     url: '/titantkx/titan/validatorreward/params',
     adapter,
