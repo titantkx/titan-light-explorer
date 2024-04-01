@@ -127,6 +127,26 @@ function color(v: string) {
               <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ conn.client_id }} {{ props.connection_id }}
               </div>
+              <div class="flex justify-center mt-1">
+                <div
+                  class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
+                  :class="
+                    clientStatus.status === 'Active'
+                      ? 'text-success'
+                      : 'text-error'
+                  "
+                >
+                  <span
+                    class="inset-x-0 inset-y-0 opacity-10 absolute"
+                    :class="
+                      clientStatus.status === 'Active'
+                        ? 'bg-success'
+                        : 'bg-error'
+                    "
+                  ></span>
+                  {{ clientStatus.status }}
+                </div>
+              </div>
             </div>
           </div>
           <div class="mx-auto flex items-center">
@@ -146,24 +166,6 @@ function color(v: string) {
             <div class="text-sm text-gray-500 dark:text-gray-400">
               {{ conn.counterparty?.connection_id }}
               {{ conn.counterparty?.client_id }}
-            </div>
-            <div class="flex justify-center mt-1">
-              <div
-                class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
-                :class="
-                  clientStatus.status === 'Active'
-                    ? 'text-success'
-                    : 'text-error'
-                "
-              >
-                <span
-                  class="inset-x-0 inset-y-0 opacity-10 absolute"
-                  :class="
-                    clientStatus.status === 'Active' ? 'bg-success' : 'bg-error'
-                  "
-                ></span>
-                {{ clientStatus.status }}
-              </div>
             </div>
           </div>
         </dl>
@@ -277,7 +279,10 @@ function color(v: string) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="v in ibcStore.registryChannels">
+            <tr
+              v-for="(v, index) in ibcStore.registryChannels"
+              :key="'registryChannels' + index"
+            >
               <td>
                 <div class="flex gap-1">
                   <button
@@ -319,7 +324,7 @@ function color(v: string) {
               </td>
               <td>{{ v[ibcStore.sourceField].port_id }}</td>
             </tr>
-            <tr v-for="v in channels">
+            <tr v-for="(v, index) in channels" :key="'channel' + index">
               <td>
                 <div class="flex gap-1">
                   <button
@@ -389,7 +394,10 @@ function color(v: string) {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="resp in txs?.tx_responses">
+          <tr
+            v-for="(resp, index) in txs?.tx_responses"
+            :key="'tx_responses' + index"
+          >
             <td>{{ resp.height }}</td>
             <td>
               <div class="text-xs truncate text-primary dark:invert">
