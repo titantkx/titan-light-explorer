@@ -330,9 +330,11 @@ async function connect() {
         open.value = false;
       })
       .catch((e) => {
+        const { message } = e;
         if (
-          e.message.includes(ERROR_MESSAGE.INVALID_CHAIN) ||
-          e.message.includes(ERROR_MESSAGE.NO_CHAIN)
+          message &&
+          (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
+            message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
         ) {
           if (name.value === WalletName.Leap) {
             (window as any).leap
