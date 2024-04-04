@@ -64,7 +64,8 @@ export class LeapWallet implements AbstractWallet {
       transaction.messages.findIndex(
         (x) =>
           x.typeUrl.startsWith('/cosmwasm.wasm') ||
-          x.typeUrl.startsWith('/titan')
+          x.typeUrl.startsWith('/titan') ||
+          x.typeUrl.startsWith('/cosmos.staking.v1beta1.MsgCreateValidator')
       ) > -1
     ) {
       return this.signDirect(transaction);
