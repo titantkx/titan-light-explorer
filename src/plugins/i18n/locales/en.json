@@ -220,7 +220,8 @@
     "consensus_pub_key": "Consensus Public Key",
     "validator_reward": "Validator Reward",
     "validator_reward_pool": "Validator Reward Pool",
-    "btn_create_validator": "Create Validator"
+    "btn_create_validator": "Create Validator",
+    "btn_contribute_pool": "Contribute Pool"
   },
   "statesync": {
     "title": "What's State Sync?",

@@ -18,6 +18,7 @@ import { UniClient } from '../../libs/wallet/UniClient';
 import { WalletName, readWallet } from '../../libs/wallet/Wallet';
 
 // cosmos sdk messages
+import ContributePool from './messages/ContributePool.vue';
 import CreateValidator from './messages/CreateValidator.vue';
 import Delegate from './messages/Delegate.vue';
 import Deposit from './messages/Deposit.vue';
@@ -82,6 +83,8 @@ const msgType = computed(() => {
       return ClearAdmin;
     case 'create_validator':
       return CreateValidator;
+    case 'contribute_pool':
+      return ContributePool;
     default:
       return Send;
   }
@@ -259,8 +262,10 @@ async function sendTx() {
 
 function viewTransaction() {
   emit('view', {
-    hash: hash.value,
-    eventType: props.type,
+    detail: {
+      hash: hash.value,
+      eventType: props.type,
+    },
   });
   open.value = false;
 }

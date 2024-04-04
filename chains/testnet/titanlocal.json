@@ -1,0 +1,35 @@
+{
+  "chain_name": "Titan-testnet-local",
+  "api": [
+    "http://localhost:1317"
+  ],
+  "rpc": [
+    "http://localhost:26657"
+  ],
+  "json_rpc": [
+    "http://localhost:8545"
+  ],
+  "sdk_version": "v0.47.6-titan.3",
+  "coin_type": "60",
+  "addr_prefix": "titan",
+  "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg",
+  "assets": [
+    {
+      "base": "atkx",
+      "symbol": "TKX",
+      "exponent": "18",
+      "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
+    }
+  ],
+  "keplr_price_step": {
+    "low": 100000000000,
+    "average": 110000000000,
+    "high": 200000000000
+  },
+  "theme_color": "#FF671E",
+  "keplr_features": [
+    "cosmwasm",
+    "eth-address-gen",
+    "eth-key-sign"
+  ]
+}

@@ -313,13 +313,21 @@ loadAvatars();
       </div>
     </div>
     <div class="mt-4"></div>
-    <div class="bg-base-100 rounded-lg grid sm:grid-cols-1 md:grid-cols-3 p-4">
+    <div class="bg-base-100 rounded-lg grid sm:grid-cols-1 md:grid-cols-5 p-4">
       <span>
         <label
           for="create_validator"
-          class="btn btn-sm btn-primary rounded-md mx-8 capitalize"
+          class="btn btn-sm btn-primary rounded-md capitalize"
           @click="dialog.open('create_validator', {})"
           >{{ $t('staking.btn_create_validator') }}
+        </label>
+      </span>
+      <span>
+        <label
+          for="contribute_pool"
+          class="btn btn-sm btn-primary rounded-md capitalize"
+          @click="dialog.open('contribute_pool', {})"
+          >{{ $t('staking.btn_contribute_pool') }}
         </label>
       </span>
     </div>
