@@ -1271,7 +1271,7 @@
     "@cosmjs/math" "^0.30.1"
     "@cosmjs/utils" "^0.30.1"
 
-"@cosmjs/amino@npm:@titan-cosmjs/amino@0.32.9":
+"@cosmjs/amino@npm:@titan-cosmjs/amino@0.32.9", "@cosmjs/amino@npm:@titan-cosmjs/amino@^0.32.6":
   version "0.32.9"
   resolved "https://registry.yarnpkg.com/@titan-cosmjs/amino/-/amino-0.32.9.tgz#b15c552efca1879aa2687c1d1a47831740b21f15"
   integrity sha512-KJU2cj3OJq6Y01qffvIANpt4FX0DdMC2cXg7+YPHL561T3eq+CGsr7hiNjm/YiI6MDmOLlLZyZP5UoUeilj4NA==

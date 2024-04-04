@@ -312,6 +312,17 @@ loadAvatars();
         </span>
       </div>
     </div>
+    <div class="mt-4"></div>
+    <div class="bg-base-100 rounded-lg grid sm:grid-cols-1 md:grid-cols-3 p-4">
+      <span>
+        <label
+          for="create_validator"
+          class="btn btn-sm btn-primary rounded-md mx-8 capitalize"
+          @click="dialog.open('create_validator', {})"
+          >{{ $t('staking.btn_create_validator') }}
+        </label>
+      </span>
+    </div>
 
     <div>
       <div class="flex items-center justify-between py-1">

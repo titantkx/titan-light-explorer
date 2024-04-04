@@ -153,6 +153,8 @@ export async function getStakingParam(endpoint: string): Promise<{
     max_entries: number;
     historical_entries: number;
     bond_denom: string;
+    min_commission_rate: string;
+    global_min_self_delegation: string;
   };
 }> {
   const url = `${endpoint}/cosmos/staking/v1beta1/params`;

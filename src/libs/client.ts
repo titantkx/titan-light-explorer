@@ -1,7 +1,6 @@
 import { DEFAULT, fetchData } from '@/libs';
-import { PageRequest, type Coin } from '@/types';
+import { PageRequest } from '@/types';
 import {
-  adapter,
   findApiProfileByChain,
   findApiProfileBySDKVersion,
   registryChainProfile,
@@ -88,20 +87,9 @@ export class CosmosRestClient extends BaseRestClient<RequestRegistry> {
   }
   async getBankSupplyByDenom(denom: string) {
     let supply;
-    try {
-      supply = await this.request(this.registry.bank_supply_by_denom, {
-        denom,
-      });
-    } catch (err) {
-      // will move this to sdk version profile later
-      supply = await this.request(
-        {
-          url: '/cosmos/bank/v1beta1/supply/by_denom?denom={denom}',
-          adapter,
-        } as Request<{ amount: Coin }>,
-        { denom }
-      );
-    }
+    supply = await this.request(this.registry.bank_supply_by_denom, {
+      denom,
+    });
     return supply;
   }
   // Distribution Module

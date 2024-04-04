@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-countdown": "2",
+    "@cosmjs/amino": "npm:@titan-cosmjs/amino@^0.32.6",
     "@cosmjs/cosmwasm-stargate": "npm:@titan-cosmjs/cosmwasm-stargate@^0.32.6",
     "@cosmjs/crypto": "npm:@titan-cosmjs/crypto@^0.32.6",
     "@cosmjs/encoding": "npm:@titan-cosmjs/encoding@^0.32.6",

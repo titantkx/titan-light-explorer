@@ -215,7 +215,8 @@
     "signer_addr": "验证人地址",
     "consensus_pub_key": "验证人公钥",
     "validator_reward": "验证者奖励",
-    "validator_reward_pool": "验证者奖励池"
+    "validator_reward_pool": "验证者奖励池",
+    "btn_create_validator": "创建验证人"
   },
   "statesync": {
     "title": "What's State Sync?",

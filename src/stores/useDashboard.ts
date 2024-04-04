@@ -1,3 +1,4 @@
+import { NetworkType, getNetworkType } from '@/libs/network';
 import type { Asset, Chain } from '@ping-pub/chain-registry-client/dist/types';
 import { defineStore } from 'pinia';
 import { get } from '../libs/http';
@@ -245,10 +246,7 @@ export enum LoadingStatus {
   Loading,
   Loaded,
 }
-export enum NetworkType {
-  Mainnet,
-  Testnet,
-}
+
 export enum ConfigSource {
   MainnetCosmosDirectory = 'https://chains.cosmos.directory',
   TestnetCosmosDirectory = 'https://chains.testcosmos.directory',
@@ -325,13 +323,7 @@ export const useDashboard = defineStore('dashboard', {
       }
     },
     async loadingFromLocal() {
-      this.networkType = NetworkType.Mainnet;
-      if (
-        window.location.hostname.search('testnet') > -1 ||
-        window.location.hostname.search('localhost') > -1
-      ) {
-        this.networkType = NetworkType.Testnet;
-      }
+      this.networkType = getNetworkType();
       const source: Record<string, LocalConfig> =
         this.networkType === NetworkType.Mainnet
           ? import.meta.glob('../../chains/mainnet/*.json', { eager: true })

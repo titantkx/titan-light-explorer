@@ -214,7 +214,8 @@
     "signer_addr": "Alamat Penandatangan",
     "consensus_pub_key": "Kunci Publik Konsensus",
     "validator_reward": "Hadiah Validator",
-    "validator_reward_pool": "Kumpulan Hadiah Validator"
+    "validator_reward_pool": "Kumpulan Hadiah Validator",
+    "btn_create_validator": "Buat Validator"
   },
   "statesync": {
     "title": "Apa itu State Sync?",

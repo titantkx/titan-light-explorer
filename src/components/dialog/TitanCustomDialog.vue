@@ -18,6 +18,7 @@ import { UniClient } from '../../libs/wallet/UniClient';
 import { WalletName, readWallet } from '../../libs/wallet/Wallet';
 
 // cosmos sdk messages
+import CreateValidator from './messages/CreateValidator.vue';
 import Delegate from './messages/Delegate.vue';
 import Deposit from './messages/Deposit.vue';
 import Redelegate from './messages/Redelegate.vue';
@@ -29,6 +30,7 @@ import Withdraw from './messages/Withdraw.vue';
 import WithdrawCommission from './messages/WithdrawCommission.vue';
 
 // wasm msgs
+import { NetworkType, getNetworkType } from '@/libs/network';
 import ChainRegistryClient from '@ping-pub/chain-registry-client';
 import ClearAdmin from './wasm/ClearAdmin.vue';
 import ExecuteContract from './wasm/ExecuteContract.vue';
@@ -78,6 +80,8 @@ const msgType = computed(() => {
       return UpdateAdmin;
     case 'wasm_clear_admin':
       return ClearAdmin;
+    case 'create_validator':
+      return CreateValidator;
     default:
       return Send;
   }
@@ -141,9 +145,17 @@ async function initData() {
 
       // load metadata from registry
       if (props.registryName && Object.keys(metadatas.value).length === 0) {
+        let registryName = props.registryName.toLowerCase();
+
+        if (getNetworkType() === NetworkType.Testnet) {
+          registryName = `testnets/${props.registryName
+            .replace(' ', '')
+            .toLowerCase()}`;
+        }
+
         const client = new ChainRegistryClient();
         client
-          .fetchAssetsList(props.registryName)
+          .fetchAssetsList(registryName)
           .then((x) => {
             x.assets.forEach((a) => {
               metadatas.value[a.base] = a as CoinMetadata;

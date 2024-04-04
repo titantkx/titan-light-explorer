@@ -219,7 +219,8 @@
     "signer_addr": "Signer Address",
     "consensus_pub_key": "Consensus Public Key",
     "validator_reward": "Validator Reward",
-    "validator_reward_pool": "Validator Reward Pool"
+    "validator_reward_pool": "Validator Reward Pool",
+    "btn_create_validator": "Create Validator"
   },
   "statesync": {
     "title": "What's State Sync?",
