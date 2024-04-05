@@ -11,6 +11,7 @@
     "https://titan-testnet-rpc-4.titanlab.io:443"
   ],
   "json_rpc": [
+    "https://titan-testnet-json-rpc.titanlab.io:443",
     "https://titan-testnet-json-rpc-1.titanlab.io:443",
     "https://titan-testnet-json-rpc-2.titanlab.io:443"
   ],
