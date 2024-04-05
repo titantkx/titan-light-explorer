@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import CommissionRate from '@/components/ValidatorCommissionRate.vue';
 import {
-consensusPubkeyToHexAddress,
-operatorAddressToAccount,
-pubKeyToValcons,
-valoperToPrefix,
+  consensusPubkeyToHexAddress,
+  operatorAddressToAccount,
+  pubKeyToValcons,
+  valoperToPrefix,
 } from '@/libs';
 import {
-useBlockchain,
-useFormatter,
-useStakingStore,
-useTxDialog
+  useBlockchain,
+  useFormatter,
+  useStakingStore,
+  useTxDialog,
 } from '@/stores';
 import type { Coin, Delegation, PaginatedTxs, Validator } from '@/types';
 import { Icon } from '@iconify/vue';
@@ -31,6 +31,7 @@ const avatars = ref(cache || {});
 const identity = ref('');
 const rewards = ref([] as Coin[] | undefined);
 const commission = ref([] as Coin[] | undefined);
+const validatorRewardRate = ref('');
 const addresses = ref(
   {} as {
     account: string;
@@ -60,9 +61,11 @@ blockchain.rpc.getTxsBySender(addresses.value.account).then((x) => {
 const apr = computed(() => {
   const rate = v.value.commission?.commission_rates.rate || 0;
   // const inflation = useMintStore().inflation;
-  // if (Number(inflation)) {
-  //   return format.percent((1 - Number(rate)) * Number(inflation));
-  // }
+  if (Number(validatorRewardRate.value)) {
+    return format.percent(
+      (1 - Number(rate)) * Number(validatorRewardRate.value)
+    );
+  }
   return '-';
 });
 
@@ -83,6 +86,10 @@ const logo = (identity?: string) => {
     : `https://s3.amazonaws.com/keybase_processed_uploads/${url}`;
 };
 onMounted(() => {
+  blockchain.rpc.getValidatorReward().then((res) => {
+    validatorRewardRate.value = res.params.rate;
+  });
+
   if (validator) {
     staking.fetchValidator(validator).then((res) => {
       v.value = res.validator;
@@ -201,7 +208,9 @@ const tipMsg = computed(() => {
             <div class="card-list">
               <div class="flex items-center mb-2">
                 <Icon icon="mdi-web" class="text-xl mr-1" />
-                <span class="font-bold mr-2">{{ $t('staking.website') }}: </span>
+                <span class="font-bold mr-2"
+                  >{{ $t('staking.website') }}:
+                </span>
                 <a
                   :href="v?.description?.website || '#'"
                   :class="
@@ -215,17 +224,21 @@ const tipMsg = computed(() => {
               </div>
               <div class="flex items-center">
                 <Icon icon="mdi-email-outline" class="text-xl mr-1" />
-                <span class="font-bold mr-2">{{ $t('staking.contact') }}: </span>
+                <span class="font-bold mr-2"
+                  >{{ $t('staking.contact') }}:
+                </span>
                 <a
                   v-if="v.description?.security_contact"
-                  :href="'mailto:' + v.description.security_contact || '#' "
+                  :href="'mailto:' + v.description.security_contact || '#'"
                   class="cursor-pointer"
                 >
                   {{ v.description?.security_contact || '-' }}
                 </a>
               </div>
             </div>
-            <p class="text-sm mt-4 mb-3 font-medium">{{ $t('staking.validator_status') }}</p>
+            <p class="text-sm mt-4 mb-3 font-medium">
+              {{ $t('staking.validator_status') }}
+            </p>
             <div class="card-list">
               <div class="flex items-center mb-2">
                 <Icon icon="mdi-shield-account-outline" class="text-xl mr-1" />
@@ -311,11 +324,16 @@ const tipMsg = computed(() => {
                 class="flex items-center justify-center rounded w-10 h-10"
                 style="border: 1px solid #666"
               >
-                <Icon icon="mdi:arrow-down-bold-circle-outline" class="text-3xl" />
+                <Icon
+                  icon="mdi:arrow-down-bold-circle-outline"
+                  class="text-3xl"
+                />
               </div>
               <div class="ml-3 flex flex-col justify-center">
                 <h4>{{ v.unbonding_height }}</h4>
-                <span class="text-sm">{{ $t('staking.unbonding_height') }}</span>
+                <span class="text-sm">{{
+                  $t('staking.unbonding_height')
+                }}</span>
               </div>
             </div>
 
@@ -327,7 +345,13 @@ const tipMsg = computed(() => {
                 <Icon icon="mdi-clock" class="text-3xl" />
               </div>
               <div class="ml-3 flex flex-col justify-center">
-                <h4 v-if="v.unbonding_time && !v.unbonding_time.startsWith('1970')">{{ format.toDay(v.unbonding_time, 'from') }}</h4>
+                <h4
+                  v-if="
+                    v.unbonding_time && !v.unbonding_time.startsWith('1970')
+                  "
+                >
+                  {{ format.toDay(v.unbonding_time, 'from') }}
+                </h4>
                 <h4 v-else>-</h4>
                 <span class="text-sm">{{ $t('staking.unbonding_time') }}</span>
               </div>
@@ -362,7 +386,9 @@ const tipMsg = computed(() => {
             >
               {{ format.formatToken2(i) }}
             </div>
-            <div class="text-sm mb-2 mt-2">{{ $t('staking.outstanding') }} {{ $t('account.rewards') }}</div>
+            <div class="text-sm mb-2 mt-2">
+              {{ $t('staking.outstanding') }} {{ $t('account.rewards') }}
+            </div>
             <div
               v-for="(i, k) in rewards"
               :key="`reward-${k}`"
@@ -391,14 +417,15 @@ const tipMsg = computed(() => {
         </div>
         <div class="px-4 pb-4">
           <div class="mb-3">
-            <div class="text-sm flex">{{ $t('staking.account_addr') }} 
+            <div class="text-sm flex">
+              {{ $t('staking.account_addr') }}
               <Icon
-                  icon="mdi:content-copy"
-                  class="ml-2 cursor-pointer"
-                  v-show="addresses.account"
-                  @click="copyWebsite(addresses.account || '')"
-                />
-              </div>
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="addresses.account"
+                @click="copyWebsite(addresses.account || '')"
+              />
+            </div>
             <RouterLink
               class="text-xs text-primary"
               :to="`/${chain}/account/${addresses.account}`"
@@ -407,55 +434,62 @@ const tipMsg = computed(() => {
             </RouterLink>
           </div>
           <div class="mb-3">
-            <div class="text-sm flex">{{ $t('staking.operator_addr') }}
+            <div class="text-sm flex">
+              {{ $t('staking.operator_addr') }}
               <Icon
-                  icon="mdi:content-copy"
-                  class="ml-2 cursor-pointer"
-                  v-show="v.operator_address"
-                  @click="copyWebsite(v.operator_address || '')"
-                /></div>
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="v.operator_address"
+                @click="copyWebsite(v.operator_address || '')"
+              />
+            </div>
             <div class="text-xs">
               {{ v.operator_address }}
             </div>
           </div>
           <div class="mb-3">
-            <div class="text-sm flex">{{ $t('staking.hex_addr') }}
+            <div class="text-sm flex">
+              {{ $t('staking.hex_addr') }}
               <Icon
-                  icon="mdi:content-copy"
-                  class="ml-2 cursor-pointer"
-                  v-show="addresses.hex"
-                  @click="copyWebsite(addresses.hex || '')"
-                />
-              </div>
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="addresses.hex"
+                @click="copyWebsite(addresses.hex || '')"
+              />
+            </div>
             <div class="text-xs">{{ addresses.hex }}</div>
           </div>
           <div class="mb-3">
-            <div class="text-sm flex">{{ $t('staking.signer_addr') }}
+            <div class="text-sm flex">
+              {{ $t('staking.signer_addr') }}
               <Icon
-                  icon="mdi:content-copy"
-                  class="ml-2 cursor-pointer"
-                  v-show="addresses.valCons"
-                  @click="copyWebsite(addresses.valCons || '')"
-                />
-              </div>
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="addresses.valCons"
+                @click="copyWebsite(addresses.valCons || '')"
+              />
+            </div>
             <div class="text-xs">{{ addresses.valCons }}</div>
           </div>
           <div>
-            <div class="text-sm flex">{{ $t('staking.consensus_pub_key') }}
+            <div class="text-sm flex">
+              {{ $t('staking.consensus_pub_key') }}
               <Icon
-                  icon="mdi:content-copy"
-                  class="ml-2 cursor-pointer"
-                  v-show="v.consensus_pubkey"
-                  @click="copyWebsite(JSON.stringify(v.consensus_pubkey) || '')"
-                />
-              </div>
+                icon="mdi:content-copy"
+                class="ml-2 cursor-pointer"
+                v-show="v.consensus_pubkey"
+                @click="copyWebsite(JSON.stringify(v.consensus_pubkey) || '')"
+              />
+            </div>
             <div class="text-xs">{{ v.consensus_pubkey }}</div>
           </div>
         </div>
       </div>
     </div>
     <div class="mt-5 bg-base-100 shadow rounded p-4">
-      <div class="text-lg mb-4 font-semibold">{{ $t('account.transactions') }}</div>
+      <div class="text-lg mb-4 font-semibold">
+        {{ $t('account.transactions') }}
+      </div>
       <div class="rounded overflow-auto">
         <table class="table validatore-table w-full">
           <thead>
@@ -463,7 +497,9 @@ const tipMsg = computed(() => {
               {{ $t('account.height') }}
             </th>
             <th class="text-left pl-4">{{ $t('account.hash') }}</th>
-            <th class="text-left pl-4" width="40%">{{ $t('account.messages') }}</th>
+            <th class="text-left pl-4" width="40%">
+              {{ $t('account.messages') }}
+            </th>
             <th class="text-left pl-4">{{ $t('account.time') }}</th>
           </thead>
           <tbody>
