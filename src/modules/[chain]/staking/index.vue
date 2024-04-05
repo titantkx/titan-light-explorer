@@ -26,10 +26,14 @@ const avatars = ref(cache || {});
 const latest = ref({} as Record<string, number>);
 const yesterday = ref({} as Record<string, number>);
 const tab = ref('active');
+const unbondingList = ref([] as Validator[]);
 const unbondList = ref([] as Validator[]);
 const slashing = ref({} as SlashingParam);
 
 onMounted(() => {
+  staking.fetchUnbondingValidators().then((res) => {
+    unbondingList.value = res;
+  });
   staking.fetchInacitveValdiators().then((res) => {
     unbondList.value = res;
   });
@@ -158,6 +162,12 @@ const list = computed(() => {
         }));
     }
     return [];
+  } else if (tab.value === 'unbonding') {
+    return unbondingList.value.map((x, i) => ({
+      v: x,
+      rank: 'error',
+      logo: logo(x.description.identity),
+    }));
   }
   return unbondList.value.map((x, i) => ({
     v: x,
@@ -346,6 +356,12 @@ loadAvatars();
             :class="{ 'tab-active': tab === 'active' }"
             @click="tab = 'active'"
             >{{ $t('staking.active') }}</a
+          >
+          <a
+            class="tab text-gray-400"
+            :class="{ 'tab-active': tab === 'unbonding' }"
+            @click="tab = 'unbonding'"
+            >{{ $t('staking.unbonding') }}</a
           >
           <a
             class="tab text-gray-400"

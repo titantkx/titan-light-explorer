@@ -117,6 +117,11 @@ export async function getActiveValidators(endpoint: string) {
   return get(url);
 }
 
+export async function getUnbondingValidators(endpoint: string) {
+  const url = `${endpoint}/cosmos/staking/v1beta1/validators?pagination.limit=300&status=BOND_STATUS_UNBONDING`;
+  return get(url);
+}
+
 export async function getInactiveValidators(endpoint: string) {
   const url = `${endpoint}/cosmos/staking/v1beta1/validators?pagination.limit=300&status=BOND_STATUS_UNBONDED`;
   return get(url);

@@ -185,6 +185,7 @@
     "downtime_slashing": "离线惩罚",
     "popular": "推荐",
     "active": "活跃",
+    "unbonding": "赎回中",
     "inactive": "不活跃",
     "rank": "排名",
     "validator": "验证人",
@@ -217,7 +218,8 @@
     "validator_reward": "验证者奖励",
     "validator_reward_pool": "验证者奖励池",
     "btn_create_validator": "创建验证人",
-    "btn_contribute_pool": "贡献奖励池"
+    "btn_contribute_pool": "贡献奖励池",
+    "btn_unjail": "解除囚禁"
   },
   "statesync": {
     "title": "What's State Sync?",

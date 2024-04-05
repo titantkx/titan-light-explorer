@@ -11,6 +11,7 @@ import {
   useFormatter,
   useStakingStore,
   useTxDialog,
+  useWalletStore,
 } from '@/stores';
 import type { Coin, Delegation, PaginatedTxs, Validator } from '@/types';
 import { Icon } from '@iconify/vue';
@@ -22,6 +23,7 @@ const staking = useStakingStore();
 const blockchain = useBlockchain();
 const format = useFormatter();
 const dialog = useTxDialog();
+const wallet = useWalletStore();
 
 const validator: string = props.validator;
 
@@ -191,16 +193,30 @@ const tipMsg = computed(() => {
               <div class="text-sm mb-4">
                 {{ v.description?.identity || '-' }}
               </div>
-              <label
-                for="delegate"
-                class="btn btn-primary btn-sm w-full"
-                @click="
-                  dialog.open('delegate', {
-                    validator_address: v.operator_address,
-                  })
-                "
-                >{{ $t('account.btn_delegate') }}</label
-              >
+              <div class="flex flex-col lg:!flex-row">
+                <label
+                  for="delegate"
+                  class="btn btn-primary btn-sm m-0.5"
+                  @click="
+                    dialog.open('delegate', {
+                      validator_address: v.operator_address,
+                    })
+                  "
+                  >{{ $t('account.btn_delegate') }}</label
+                >
+                <label
+                  v-if="v.jailed && wallet.currentAddress === addresses.account"
+                  for="unjail"
+                  class="btn btn-primary btn-sm m-0.5"
+                  @click="
+                    dialog.open('unjail', {
+                      validator_address: v.operator_address,
+                    })
+                  "
+                >
+                  {{ $t('staking.btn_unjail') }}
+                </label>
+              </div>
             </div>
           </div>
           <div class="m-4 text-sm">

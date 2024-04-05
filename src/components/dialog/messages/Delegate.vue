@@ -6,6 +6,7 @@ import {
   getActiveValidators,
   getInactiveValidators,
   getStakingParam,
+  getUnbondingValidators,
 } from '../../../libs/utils/http';
 import type { Coin, CoinMetadata } from '../../../libs/utils/type';
 
@@ -21,6 +22,7 @@ const params = computed(() => JSON.parse(props.params || '{}'));
 const validator = ref('');
 
 const activeValidators = ref([]);
+const unbondingValidators = ref([]);
 const inactiveValidators = ref([]);
 const stakingDenom = ref('');
 const unbondingTime = ref('');
@@ -52,7 +54,11 @@ const list: ComputedRef<
     status: string;
   }[]
 > = computed(() => {
-  return [...activeValidators.value, ...inactiveValidators.value];
+  return [
+    ...activeValidators.value,
+    ...unbondingValidators.value,
+    ...inactiveValidators.value,
+  ];
 });
 
 const available = computed(() => {
@@ -68,6 +74,9 @@ const available = computed(() => {
 });
 
 function loadInactiveValidators() {
+  getUnbondingValidators(props.endpoint).then((x) => {
+    unbondingValidators.value = x.validators;
+  });
   getInactiveValidators(props.endpoint).then((x) => {
     inactiveValidators.value = x.validators;
   });
@@ -113,10 +122,15 @@ function initial() {
 
   getActiveValidators(props.endpoint).then((x) => {
     activeValidators.value = x.validators;
-    if (!params.value.validator_address) {
-      validator.value = x.validators.find(
-        (v: any) => v.description.identity === '6783E9F948541962'
-      )?.operator_address;
+    if (params.value.validator_address) {
+      // if do not found => loadInactiveValidators
+      if (
+        !x.validators.find(
+          (v: any) => v.operator_address === params.value.validator_address
+        )
+      ) {
+        loadInactiveValidators();
+      }
     }
   });
 }

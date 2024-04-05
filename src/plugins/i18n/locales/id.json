@@ -184,6 +184,7 @@
     "downtime_slashing": "Pemotongan Downtime",
     "popular": "Populer",
     "active": "Aktif",
+    "unbonding": "Pemisahan",
     "inactive": "Tidak Aktif",
     "rank": "Peringkat",
     "validator": "Validator",
@@ -216,7 +217,8 @@
     "validator_reward": "Hadiah Validator",
     "validator_reward_pool": "Kumpulan Hadiah Validator",
     "btn_create_validator": "Buat Validator",
-    "btn_contribute_pool": "Kontribusi Kumpulan"
+    "btn_contribute_pool": "Kontribusi Kumpulan",
+    "btn_unjail": "Bebaskan dari Penjara"
   },
   "statesync": {
     "title": "Apa itu State Sync?",

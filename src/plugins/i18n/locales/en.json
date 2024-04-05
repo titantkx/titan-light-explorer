@@ -190,6 +190,7 @@
     "popular": "Popular",
     "active": "Active",
     "inactive": "Inactive",
+    "unbonding": "Unbonding",
     "rank": "Rank",
     "validator": "Validator",
     "voting_power": "Voting Power",
@@ -221,7 +222,8 @@
     "validator_reward": "Validator Reward",
     "validator_reward_pool": "Validator Reward Pool",
     "btn_create_validator": "Create Validator",
-    "btn_contribute_pool": "Contribute Pool"
+    "btn_contribute_pool": "Contribute Pool",
+    "btn_unjail": "Unjail"
   },
   "statesync": {
     "title": "What's State Sync?",

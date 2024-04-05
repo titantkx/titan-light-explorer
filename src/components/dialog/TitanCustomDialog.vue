@@ -26,6 +26,7 @@ import Redelegate from './messages/Redelegate.vue';
 import Send from './messages/Send.vue';
 import Transfer from './messages/Transfer.vue';
 import Unbond from './messages/Unbond.vue';
+import Unjail from './messages/Unjail.vue';
 import Vote from './messages/Vote.vue';
 import Withdraw from './messages/Withdraw.vue';
 import WithdrawCommission from './messages/WithdrawCommission.vue';
@@ -85,6 +86,8 @@ const msgType = computed(() => {
       return CreateValidator;
     case 'contribute_pool':
       return ContributePool;
+    case 'unjail':
+      return Unjail;
     default:
       return Send;
   }
