@@ -1,4 +1,4 @@
-import { NetworkType, getNetworkType } from '@/libs/network';
+import { getNetworkType, NetworkType } from '@/libs/network';
 import { useBlockchain } from '@/stores';
 import { createRouter, createWebHistory } from 'vue-router';
 // @ts-ignore
@@ -15,6 +15,30 @@ const router = createRouter({
         getNetworkType() === NetworkType.Testnet
           ? '/Titan%20Testnet'
           : '/Titan',
+    },
+    {
+      path:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/address'
+          : '/Titan/address',
+      redirect:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/account'
+          : '/Titan/account',
+    },
+    {
+      path:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/address/:id'
+          : '/Titan/address/:id',
+      redirect: (to) => {
+        return {
+          path:
+            getNetworkType() === NetworkType.Testnet
+              ? `/Titan%20Testnet/account/${to.params.id}`
+              : `/Titan/account/${to.params.id}`,
+        };
+      },
     },
     ...setupLayouts(routes),
   ],
