@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import {
-  getAccount,
-  getBalance,
-  getBalanceMetadata,
-  getIBCDenomMetadata,
-  getLatestBlock,
-  getStakingParam,
-  getTxByHash,
+getAccount,
+getBalance,
+getBalanceMetadata,
+getIBCDenomMetadata,
+getLatestBlock,
+getStakingParam,
+getTxByHash,
 } from '../../libs/utils/http';
 import {
-  BroadcastMode,
-  type Coin,
-  type CoinMetadata,
+BroadcastMode,
+type Coin,
+type CoinMetadata,
 } from '../../libs/utils/type';
 import { UniClient } from '../../libs/wallet/UniClient';
 import { WalletName, readWallet } from '../../libs/wallet/Wallet';
@@ -27,6 +27,7 @@ import Send from './messages/Send.vue';
 import Transfer from './messages/Transfer.vue';
 import Unbond from './messages/Unbond.vue';
 import Unjail from './messages/Unjail.vue';
+import UpdateAPR from './messages/UpdateAPR.vue';
 import Vote from './messages/Vote.vue';
 import Withdraw from './messages/Withdraw.vue';
 import WithdrawCommission from './messages/WithdrawCommission.vue';
@@ -88,6 +89,8 @@ const msgType = computed(() => {
       return ContributePool;
     case 'unjail':
       return Unjail;
+    case 'update_apr':
+      return UpdateAPR;
     default:
       return Send;
   }

@@ -223,6 +223,7 @@
     "validator_reward_pool": "Validator Reward Pool",
     "btn_create_validator": "Create Validator",
     "btn_contribute_pool": "Contribute Pool",
+    "btn_update_apr": "Update APR",
     "btn_unjail": "Unjail"
   },
   "statesync": {

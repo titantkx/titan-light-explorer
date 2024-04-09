@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { formatSeconds } from '@/libs/utils';
 import {
-  useBaseStore,
-  useBlockchain,
-  useFormatter,
-  useParamStore,
-  useStakingStore,
-  useTxDialog,
+useBaseStore,
+useBlockchain,
+useFormatter,
+useParamStore,
+useStakingStore,
+useTxDialog,
+useValidatorRewardStore,
+useWalletStore
 } from '@/stores';
 import type { Key, SlashingParam, Validator } from '@/types';
 import { Icon } from '@iconify/vue';
@@ -20,6 +22,8 @@ const dialog = useTxDialog();
 const chainStore = useBlockchain();
 // const mintStore = useMintStore()
 const paramStore = useParamStore();
+const validatorRewardStore  = useValidatorRewardStore();
+const wallet = useWalletStore();
 
 const cache = JSON.parse(localStorage.getItem('avatars') || '{}');
 const avatars = ref(cache || {});
@@ -40,6 +44,7 @@ onMounted(() => {
   chainStore.rpc.getSlashingParams().then((res) => {
     slashing.value = res.params;
   });
+  validatorRewardStore.fetchParams();  
   paramStore.initial();
 });
 
@@ -338,6 +343,15 @@ loadAvatars();
           class="btn btn-sm btn-primary rounded-md capitalize"
           @click="dialog.open('contribute_pool', {})"
           >{{ $t('staking.btn_contribute_pool') }}
+        </label>
+      </span>
+      <span
+        v-if="validatorRewardStore.params.authority===wallet.currentAddress">
+        <label
+          for="update_apr"
+          class="btn btn-sm btn-primary rounded-md capitalize"
+          @click="dialog.open('update_apr', {})"
+          >{{ $t('staking.btn_update_apr') }}
         </label>
       </span>
     </div>

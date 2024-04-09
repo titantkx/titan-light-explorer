@@ -180,3 +180,14 @@ export async function estimateSwapAmountIn(
   const url = `${endpoint}/osmosis/gamm/v1beta1/${poolId}/estimate/swap_exact_amount_in?token_in=${token.amount}${token.denom}`;
   return get(url);
 }
+
+// /titantkx/titan/validatorreward/params
+export async function getValidatorRewardParams(endpoint: string): Promise<{
+  params: {
+    rate: string;
+    authority: string;    
+  };
+}> {
+  const url = `${endpoint}/titantkx/titan/validatorreward/params`;
+  return get(url);
+}

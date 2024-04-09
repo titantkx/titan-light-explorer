@@ -218,6 +218,7 @@
     "validator_reward_pool": "Kumpulan Hadiah Validator",
     "btn_create_validator": "Buat Validator",
     "btn_contribute_pool": "Kontribusi Kumpulan",
+    "btn_update_apr": "Perbarui APR",
     "btn_unjail": "Bebaskan dari Penjara"
   },
   "statesync": {

@@ -4,13 +4,13 @@ import type { Ed25519Pubkey } from '@cosmjs/amino';
 import { Decimal } from '@cosmjs/math';
 import { encodePubkey } from '@cosmjs/proto-signing';
 import type {
-  MsgCreateValidatorEncodeObject,
-  MsgCreateValidatorForOtherEncodeObject,
+MsgCreateValidatorEncodeObject,
+MsgCreateValidatorForOtherEncodeObject,
 } from '@cosmjs/stargate';
 import BigNumber from 'bignumber.js';
 import {
-  MsgCreateValidator,
-  MsgCreateValidatorForOther,
+MsgCreateValidator,
+MsgCreateValidatorForOther,
 } from 'cosmjs-types/cosmos/staking/v1beta1/tx';
 import { computed, ref, type PropType } from 'vue';
 import { TokenUnitConverter } from '../../../libs/utils/TokenUnitConverter';
@@ -51,7 +51,9 @@ const msgs = computed(() => {
     type: 'tendermint/PubKeyEd25519',
     value: publicKey.value,
   };
-  const commissionRateString = (Number(commissionRate.value) / 100).toString();
+  const commissionRateString = BigNumber(commissionRate.value)
+    .div(100)
+    .toString();
 
   if (props.sender !== delegator.value) {
     // This is create validator for other
