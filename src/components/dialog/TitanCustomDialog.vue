@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import {
-getAccount,
-getBalance,
-getBalanceMetadata,
-getIBCDenomMetadata,
-getLatestBlock,
-getStakingParam,
-getTxByHash,
+  getAccount,
+  getBalance,
+  getBalanceMetadata,
+  getIBCDenomMetadata,
+  getLatestBlock,
+  getStakingParam,
+  getTxByHash,
 } from '../../libs/utils/http';
 import {
-BroadcastMode,
-type Coin,
-type CoinMetadata,
+  BroadcastMode,
+  type Coin,
+  type CoinMetadata,
 } from '../../libs/utils/type';
 import { UniClient } from '../../libs/wallet/UniClient';
 import { WalletName, readWallet } from '../../libs/wallet/Wallet';
@@ -126,7 +126,7 @@ async function initData() {
     metadatas.value = {};
     view.value = 'input';
     p.value = JSON.parse(props.params || '{}');
-    memo.value = props.type?.toLowerCase() === 'send' ? '' : 'ping.pub';
+    memo.value = props.type?.toLowerCase() === 'send' ? '' : 'titanlab.io';
 
     feeAmount.value = Number(p.value?.fees?.amount || 2000);
     feeDenom.value = balance.value[0]?.denom;
