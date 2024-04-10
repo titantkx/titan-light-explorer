@@ -1,12 +1,5 @@
-import {
-  fromBase64,
-  fromBech32,
-  fromHex,
-  toBase64,
-  toBech32,
-  toHex,
-} from '@cosmjs/encoding';
 import { Ripemd160, sha256 } from '@cosmjs/crypto';
+import { fromBase64, fromBech32, toBech32, toHex } from '@cosmjs/encoding';
 
 export function decodeAddress(address: string) {
   return fromBech32(address);
@@ -76,4 +69,9 @@ export function toETHAddress(cosmosAddress: string) {
 
 export function addressEnCode(prefix: string, pubkey: Uint8Array) {
   return toBech32(prefix, pubkey);
+}
+
+export function accountToValoper(account: string) {
+  const accountDecoded = decodeAddress(account);
+  return toBech32(`${accountDecoded.prefix}valoper`, accountDecoded.data);
 }

@@ -105,6 +105,7 @@
     "code_hash": "代码哈希",
     "creator": "创建人",
     "permissions": "权限",
+    "btn_next_page": "下一页",
     "btn_up_sc": "上传合约",
     "contract_list_code": "合约列表",
     "contract_list": "合约",
@@ -184,6 +185,7 @@
     "downtime_slashing": "离线惩罚",
     "popular": "推荐",
     "active": "活跃",
+    "unbonding": "赎回中",
     "inactive": "不活跃",
     "rank": "排名",
     "validator": "验证人",
@@ -212,7 +214,13 @@
     "operator_addr": "操作员地址",
     "hex_addr": "Hex 地址",
     "signer_addr": "验证人地址",
-    "consensus_pub_key": "验证人公钥"
+    "consensus_pub_key": "验证人公钥",
+    "validator_reward": "验证者奖励",
+    "validator_reward_pool": "验证者奖励池",
+    "btn_create_validator": "创建验证人",
+    "btn_contribute_pool": "贡献奖励池",
+    "btn_update_apr": "更新年利率",
+    "btn_unjail": "解除囚禁"
   },
   "statesync": {
     "title": "What's State Sync?",

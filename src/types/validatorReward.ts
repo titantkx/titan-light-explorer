@@ -4,3 +4,7 @@ export interface ValidatorRewardParam {
     authority: string;
   };
 }
+
+export interface ValidatorRewardPool {
+  pool: Array<{ denom: string; amount: string }>;
+}

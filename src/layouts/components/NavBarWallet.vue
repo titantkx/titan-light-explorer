@@ -269,12 +269,17 @@ async function initForMetamask() {
   // Process rename `Titan Testnet` to `Titan (TKX) Testnet`
   // and `Titan` to `Titan (TKX)`
   let chainName = chain.chainName;
+  let blockExplorerUrls: string[] = [];
   switch (chain.chainName) {
     case 'Titan Testnet':
       chainName = 'Titan (TKX) Testnet';
+      blockExplorerUrls = [
+        'https://titan-testnet-explorer-light.titanlab.io/Titan%20Testnet',
+      ];
       break;
     case 'Titan':
       chainName = 'Titan (TKX)';
+      blockExplorerUrls = ['https://titan-explorer-light.titanlab.io/Titan'];
       break;
     default:
       break;
@@ -291,7 +296,7 @@ async function initForMetamask() {
         symbol: chain.assets[0].symbol,
         decimals: coinDecimals,
       },
-      blockExplorerUrls: ['https://titan-testnet-explorer-light.titanlab.io'],
+      blockExplorerUrls,
     },
     null,
     '\t'
@@ -330,9 +335,11 @@ async function connect() {
         open.value = false;
       })
       .catch((e) => {
+        const { message } = e;
         if (
-          e.message.includes(ERROR_MESSAGE.INVALID_CHAIN) ||
-          e.message.includes(ERROR_MESSAGE.NO_CHAIN)
+          message &&
+          (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
+            message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
         ) {
           if (name.value === WalletName.Leap) {
             (window as any).leap

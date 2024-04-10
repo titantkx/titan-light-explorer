@@ -104,6 +104,7 @@
     "code_hash": "Code Hash",
     "creator": "Creator",
     "permissions": "Permissions",
+    "btn_next_page": "Next Page",
     "btn_up_sc": "Upload Smart Contract",
     "contract_list_code": "Contract List of Code",
     "contract_list": "Contract List",
@@ -189,6 +190,7 @@
     "popular": "Popular",
     "active": "Active",
     "inactive": "Inactive",
+    "unbonding": "Unbonding",
     "rank": "Rank",
     "validator": "Validator",
     "voting_power": "Voting Power",
@@ -216,7 +218,13 @@
     "operator_addr": "Operator Address",
     "hex_addr": "Hex Address",
     "signer_addr": "Signer Address",
-    "consensus_pub_key": "Consensus Public Key"
+    "consensus_pub_key": "Consensus Public Key",
+    "validator_reward": "Validator Reward",
+    "validator_reward_pool": "Validator Reward Pool",
+    "btn_create_validator": "Create Validator",
+    "btn_contribute_pool": "Contribute Pool",
+    "btn_update_apr": "Update APR",
+    "btn_unjail": "Unjail"
   },
   "statesync": {
     "title": "What's State Sync?",

@@ -17,7 +17,10 @@ export const DEFAULT: RequestRegistry = {
     adapter,
   },
   bank_supply: { url: '/cosmos/bank/v1beta1/supply', adapter },
-  bank_supply_by_denom: { url: '/cosmos/bank/v1beta1/supply/{denom}', adapter },
+  bank_supply_by_denom: {
+    url: '/cosmos/bank/v1beta1/supply/by_denom?denom={denom}',
+    adapter,
+  },
   distribution_params: { url: '/cosmos/distribution/v1beta1/params', adapter },
   distribution_community_pool: {
     url: '/cosmos/distribution/v1beta1/community_pool',
@@ -192,13 +195,18 @@ export const DEFAULT: RequestRegistry = {
     adapter,
   },
 
+  ibc_core_client_status_client_id: {
+    url: '/ibc/core/client/v1/client_status/{client_id}',
+    adapter,
+  },
+
   validator_reward_params: {
-    url: '/tokenize-titan/titan/validatorreward/params',
+    url: '/titantkx/titan/validatorreward/params',
     adapter,
   },
 
   validator_reward_pool: {
-    url: '/tokenize-titan/titan/validatorreward/reward_pool',
+    url: '/titantkx/titan/validatorreward/reward_pool',
     adapter,
   },
 

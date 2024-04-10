@@ -1,3 +1,4 @@
+import { getNetworkType, NetworkType } from '@/libs/network';
 import { useBlockchain } from '@/stores';
 import { createRouter, createWebHistory } from 'vue-router';
 // @ts-ignore
@@ -5,20 +6,39 @@ import { setupLayouts } from 'virtual:generated-layouts';
 // @ts-ignore
 import routes from '~pages';
 
-var networkType = 'mainnet';
-if (
-  window.location.hostname.search('testnet') > -1 ||
-  window.location.hostname.search('localhost') > -1
-) {
-  networkType = 'testnet';
-}
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: networkType == 'testnet' ? '/Titan%20Testnet' : '/Titan',
+      redirect:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet'
+          : '/Titan',
+    },
+    {
+      path:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/address'
+          : '/Titan/address',
+      redirect:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/account'
+          : '/Titan/account',
+    },
+    {
+      path:
+        getNetworkType() === NetworkType.Testnet
+          ? '/Titan%20Testnet/address/:id'
+          : '/Titan/address/:id',
+      redirect: (to) => {
+        return {
+          path:
+            getNetworkType() === NetworkType.Testnet
+              ? `/Titan%20Testnet/account/${to.params.id}`
+              : `/Titan/account/${to.params.id}`,
+        };
+      },
     },
     ...setupLayouts(routes),
   ],

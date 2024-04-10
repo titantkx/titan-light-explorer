@@ -3,20 +3,20 @@ import { makeSignDoc as makeSignDocAmino } from '@cosmjs/amino';
 import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate';
 import { fromBase64, fromBech32, toHex } from '@cosmjs/encoding';
 import {
+  Registry,
   makeAuthInfoBytes,
   makeSignDoc,
-  Registry,
   type OfflineSigner,
   type TxBodyEncodeObject,
 } from '@cosmjs/proto-signing';
-import { AminoTypes, createAuthzAminoConverters } from '@cosmjs/stargate';
+import { AminoTypes, createDefaultAminoConverters } from '@cosmjs/stargate';
 import { PubKey } from 'cosmjs-types/cosmos/crypto/secp256k1/keys';
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import {
-  keyType,
   WalletName,
+  keyType,
   type AbstractWallet,
   type Account,
   type WalletArgument,
@@ -29,7 +29,7 @@ export class LeapWallet implements AbstractWallet {
   conf: WalletArgument;
   signer: OfflineSigner | any;
   aminoTypes = new AminoTypes({
-    ...createAuthzAminoConverters(),
+    ...createDefaultAminoConverters(),
     ...createWasmAminoConverters(),
   });
   constructor(arg: WalletArgument, registry: Registry, sign?: OfflineSigner) {
@@ -59,7 +59,19 @@ export class LeapWallet implements AbstractWallet {
     return this.conf.hdPath && this.conf.hdPath.startsWith("m/44'/60");
   }
   async sign(transaction: Transaction): Promise<TxRaw> {
-    return this.signAmino(transaction);
+    return this.signDirect(transaction);
+    // // sign wasm and titan tx with signDirect
+    // if (
+    //   transaction.messages.findIndex(
+    //     (x) =>
+    //       x.typeUrl.startsWith('/cosmwasm.wasm') ||
+    //       x.typeUrl.startsWith('/titan') ||
+    //       x.typeUrl.startsWith('/cosmos.staking.v1beta1.MsgCreateValidator')
+    //   ) > -1
+    // ) {
+    //   return this.signDirect(transaction);
+    // }
+    // return this.signAmino(transaction);
   }
   // @deprecated use signAmino instead
   // because signDirect is not supported ledger wallet
