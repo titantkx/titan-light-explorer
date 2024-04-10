@@ -51,6 +51,41 @@ const messages = computed(() => {
   return tx.value.tx?.body?.messages || [];
 });
 
+const refundAmount = computed(() => {
+  // find and get refund amount
+  let refundAmount = '';
+  tx.value.tx_response?.events.forEach((event) => {
+    if (event.type === 'refund') {
+      event.attributes.forEach((attr) => {
+        if (attr.key === 'amount') {
+          refundAmount = attr.value;
+        }
+      });
+    }
+  });
+
+  // convert refund amount to { denom: string; amount: string }
+  if (refundAmount) {
+    return format.parseToken(refundAmount);
+  }
+
+  return format.parseToken('0');
+});
+
+const feeAmount = computed(() => {
+  return tx.value.tx?.auth_info?.fee?.amount.map((fee) => {
+    if (fee.denom === refundAmount.value.denom) {
+      return {
+        denom: fee.denom,
+        amount: (
+          BigInt(fee.amount) - BigInt(refundAmount.value.amount)
+        ).toString(),
+      };
+    }
+    return fee;
+  });
+});
+
 const txhash = /^[A-Z\d]{64}$/;
 const ethTxHash = /^0x[a-fA-F0-9]{64}$/;
 
@@ -243,7 +278,7 @@ function loadTx(hash: string) {
               <td>
                 {{
                   format.formatTokens(
-                    tx.tx?.auth_info?.fee?.amount,
+                    feeAmount,
                     true,
                     '0,0.[000000000000000000]'
                   )

@@ -271,6 +271,12 @@ export const useFormatter = defineStore('formatter', {
       if (!tokens) return '';
       return tokens.map((x) => this.formatToken(x, withDenom, fmt)).join(', ');
     },
+    parseToken(token: string): { denom: string; amount: string } {
+      // Ex: 1000atkx
+      const amount = token.match(/\d+/g)?.join('');
+      const denom = token.replace(amount || '', '');
+      return { denom, amount: amount || '0' };
+    },
     calculateBondedRatio(
       pool: { bonded_tokens: string; not_bonded_tokens: string } | undefined
     ) {
