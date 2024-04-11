@@ -31,14 +31,14 @@ const openAddChain = ref(false);
 const error = ref('');
 const conf = ref('');
 const sending = ref(false);
-const name = ref(WalletName.Leap);
+const name = ref(WalletName.Keplr);
 const connected = ref(readWallet(chainStore?.defaultHDPath) as ConnectedWallet);
 const selected = ref({} as ChainConfig);
 
 onMounted(() => {
   const chainStore = useBlockchain();
   selected.value = chainStore.current || Object.values(dashboard.chains)[0];
-  initParamsForLeap();
+  initParamsForKeplr();
 });
 
 async function walletStateChange(res: any) {
