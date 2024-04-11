@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import { select } from '@/components/dynamic/index';
 import {
   useBlockchain,
   useFormatter,
   useStakingStore,
   useTxDialog,
 } from '@/stores';
-import { select } from '@/components/dynamic/index';
-import ProposalProcess from './ProposalProcess.vue';
 import type { PaginatedProposals } from '@/types';
 import type { PropType } from 'vue';
 import { ref } from 'vue';
+import ProposalProcess from './ProposalProcess.vue';
 const dialog = useTxDialog();
 defineProps({
   proposals: { type: Object as PropType<PaginatedProposals> },
@@ -38,10 +38,9 @@ const voterStatusMap: Record<string, string> = {
 };
 
 const proposalInfo = ref();
-
 </script>
 <template>
-  <div class="bg-white dark:bg-[#28334e] rounded text-sm">
+  <div class="bg-white dark:bg-[#131316] rounded text-sm">
     <table class="table-compact w-full table-fixed hidden lg:!table">
       <tbody>
         <tr v-for="(item, index) in proposals?.proposals" :key="index">
@@ -221,7 +220,6 @@ const proposalInfo = ref();
 
               <span v-else>Vote</span></label
             >
-           
           </div>
         </div>
       </div>
@@ -239,7 +237,12 @@ const proposalInfo = ref();
         <p class="py-4">
           <Component
             v-if="proposalInfo?.content?.description || proposalInfo?.summary"
-            :is="select(proposalInfo?.content?.description || proposalInfo?.summary, 'horizontal')"
+            :is="
+              select(
+                proposalInfo?.content?.description || proposalInfo?.summary,
+                'horizontal'
+              )
+            "
             :value="proposalInfo?.content?.description || proposalInfo?.summary"
           >
           </Component>
