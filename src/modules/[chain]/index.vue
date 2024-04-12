@@ -381,7 +381,7 @@ const amount = computed({
       <div
         class="grid grid-cols-1 md:!grid-cols-4 auto-cols-auto gap-4 px-4 pb-6"
       >
-        <div class="bg-gray-100 dark:bg-[#373f59] rounded-sm px-4 py-3">
+        <div class="bg-gray-100 dark:bg-[#29292b] rounded-sm px-4 py-3">
           <div class="text-sm mb-1">{{ $t('account.balance') }}</div>
           <div class="text-lg font-semibold text-main">
             {{ format.formatToken(walletStore.balanceOfStakingToken) }}
@@ -390,7 +390,7 @@ const amount = computed({
             ${{ format.tokenValue(walletStore.balanceOfStakingToken) }}
           </div>
         </div>
-        <div class="bg-gray-100 dark:bg-[#373f59] rounded-sm px-4 py-3">
+        <div class="bg-gray-100 dark:bg-[#29292b] rounded-sm px-4 py-3">
           <div class="text-sm mb-1">{{ $t('module.staking') }}</div>
           <div class="text-lg font-semibold text-main">
             {{ format.formatToken(walletStore.stakingAmount) }}
@@ -399,7 +399,7 @@ const amount = computed({
             ${{ format.tokenValue(walletStore.stakingAmount) }}
           </div>
         </div>
-        <div class="bg-gray-100 dark:bg-[#373f59] rounded-sm px-4 py-3">
+        <div class="bg-gray-100 dark:bg-[#29292b] rounded-sm px-4 py-3">
           <div class="text-sm mb-1">{{ $t('index.reward') }}</div>
           <div class="text-lg font-semibold text-main">
             {{ format.formatToken(walletStore.rewardAmount) }}
@@ -408,7 +408,7 @@ const amount = computed({
             ${{ format.tokenValue(walletStore.rewardAmount) }}
           </div>
         </div>
-        <div class="bg-gray-100 dark:bg-[#373f59] rounded-sm px-4 py-3">
+        <div class="bg-gray-100 dark:bg-[#29292b] rounded-sm px-4 py-3">
           <div class="text-sm mb-1">{{ $t('index.unbonding') }}</div>
           <div class="text-lg font-semibold text-main">
             {{ format.formatToken(walletStore.unbondingAmount) }}

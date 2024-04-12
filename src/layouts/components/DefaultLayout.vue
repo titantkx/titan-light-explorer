@@ -3,17 +3,22 @@ import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
 
 // Components
-import newFooter from '@/layouts/components/NavFooter.vue';
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue';
-import NavbarSearch from '@/layouts/components/NavbarSearch.vue';
 import ChainProfile from '@/layouts/components/ChainProfile.vue';
+import newFooter from '@/layouts/components/NavFooter.vue';
+import NavbarSearch from '@/layouts/components/NavbarSearch.vue';
+import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue';
 
-import { useDashboard } from '@/stores/useDashboard';
 import { useBlockchain } from '@/stores';
+import { useDashboard } from '@/stores/useDashboard';
 
+import type {
+  NavGroup,
+  NavLink,
+  NavSectionTitle,
+  VerticalNavItems,
+} from '../types';
 import NavBarI18n from './NavBarI18n.vue';
 import NavBarWallet from './NavBarWallet.vue';
-import type { NavGroup, NavLink, NavSectionTitle, VerticalNavItems } from '../types';
 
 const dashboard = useDashboard();
 dashboard.initial();
@@ -38,22 +43,25 @@ const changeOpen = (index: Number) => {
 const showDiscord = window.location.host.search('ping.pub') > -1;
 
 function isNavGroup(nav: VerticalNavItems | any): nav is NavGroup {
-   return (<NavGroup>nav).children !== undefined;
+  return (<NavGroup>nav).children !== undefined;
 }
 function isNavLink(nav: VerticalNavItems | any): nav is NavLink {
-   return (<NavLink>nav).to !== undefined;
+  return (<NavLink>nav).to !== undefined;
 }
 function isNavTitle(nav: VerticalNavItems | any): nav is NavSectionTitle {
-   return (<NavSectionTitle>nav).heading !== undefined;
+  return (<NavSectionTitle>nav).heading !== undefined;
 }
 function selected(route: any, nav: NavLink) {
-  const b = route.path === nav.to?.path || route.path.startsWith(nav.to?.path) && nav.title.indexOf('dashboard') === -1
-  return b
+  const b =
+    route.path === nav.to?.path ||
+    (route.path.startsWith(nav.to?.path) &&
+      nav.title.indexOf('dashboard') === -1);
+  return b;
 }
 </script>
 
 <template>
-  <div class="bg-gray-100 dark:bg-[#171d30]">
+  <div class="bg-gray-100 dark:bg-[#000000]">
     <!-- sidebar -->
     <div
       class="w-64 fixed z-50 left-0 top-0 bottom-0 overflow-auto bg-base-100 border-r border-gray-100 dark:border-gray-700"
@@ -84,12 +92,9 @@ function selected(route: any, nav: NavLink) {
             'collapse-close': index === 0 && !sidebarOpen,
           }"
         >
-          <input
-            type="checkbox"
-            class="!h-10 block"
-          />
+          <input type="checkbox" class="!h-10 block" />
           <div
-            class="collapse-title !py-0 px-4 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-[#373f59]"
+            class="collapse-title !py-0 px-4 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-[#29292b]"
           >
             <Icon
               v-if="item?.icon?.icon"
@@ -119,11 +124,14 @@ function selected(route: any, nav: NavLink) {
             </div>
           </div>
           <div class="collapse-content">
-            <div v-for="(el, key) of item?.children" class="menu bg-base-100 w-full !p-0">
+            <div
+              v-for="(el, key) of item?.children"
+              class="menu bg-base-100 w-full !p-0"
+            >
               <RouterLink
                 v-if="isNavLink(el)"
                 @click="sidebarShow = false"
-                class="hover:bg-gray-100 dark:hover:bg-[#373f59] rounded cursor-pointer px-3 py-2 flex items-center"
+                class="hover:bg-gray-100 dark:hover:bg-[#29292b] rounded cursor-pointer px-3 py-2 flex items-center"
                 :class="{
                   '!bg-primary': selected($route, el),
                 }"
@@ -142,9 +150,10 @@ function selected(route: any, nav: NavLink) {
                 <img
                   v-if="el?.icon?.image"
                   :src="el?.icon?.image"
-                  class="w-6 h-6 rounded-full mr-3 ml-4 " :class="{
-                  'border border-gray-300 bg-white': selected($route, el),
-                }"
+                  class="w-6 h-6 rounded-full mr-3 ml-4"
+                  :class="{
+                    'border border-gray-300 bg-white': selected($route, el),
+                  }"
                 />
                 <div
                   class="text-base capitalize text-gray-500 dark:text-gray-300"
@@ -184,7 +193,7 @@ function selected(route: any, nav: NavLink) {
       </div>
 
       <!-- 👉 Pages -->
-      <div style="min-height: calc(100vh - 180px);">
+      <div style="min-height: calc(100vh - 180px)">
         <RouterView v-slot="{ Component }">
           <Transition mode="out-in">
             <Component :is="Component" />
