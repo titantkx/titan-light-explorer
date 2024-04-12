@@ -230,21 +230,17 @@ async function sendTx() {
       hdPath: current.hdPath,
     });
 
-    if (!advance.value) {
-      await client
-        .simulate(props.endpoint, tx, broadcast.value)
-        .then((gas) => {
-          // update tx gas
-          tx.fee.gas = (gas * 1.25).toFixed();
-        })
-        .catch(() => {
-          // sending.value = false;
-          // error.value = "Failed to simulate tx gas: " + err;
-          advance.value = true;
-        });
-    } else {
-      tx.fee.gas = gasInfo.value.toString();
-    }
+    await client
+      .simulate(props.endpoint, tx, broadcast.value)
+      .then((gas) => {
+        // update tx gas
+        tx.fee.gas = (gas * 1.3).toFixed();
+      })
+      .catch(() => {
+        // sending.value = false;
+        // error.value = "Failed to simulate tx gas: " + err;
+        advance.value = true;
+      });
 
     const txRaw = await client.sign(tx);
     const response = await client.broadcastTx(
