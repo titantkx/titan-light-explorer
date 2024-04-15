@@ -273,13 +273,11 @@ async function initForMetamask() {
   switch (chain.chainName) {
     case 'Titan Testnet':
       chainName = 'Titan (TKX) Testnet';
-      blockExplorerUrls = [
-        'https://titan-testnet-explorer-light.titanlab.io/Titan%20Testnet',
-      ];
+      blockExplorerUrls = ['https://testnet.tkxscan.io/Titan%20Testnet'];
       break;
     case 'Titan':
       chainName = 'Titan (TKX)';
-      blockExplorerUrls = ['https://titan-explorer-light.titanlab.io/Titan'];
+      blockExplorerUrls = ['https://tkxscan.io/Titan'];
       break;
     default:
       break;
