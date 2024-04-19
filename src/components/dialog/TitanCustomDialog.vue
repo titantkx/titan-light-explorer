@@ -122,6 +122,7 @@ const chainId = ref('cosmoshub-4');
 const broadcast = ref(BroadcastMode.SYNC);
 
 async function initData() {
+  error.value = '';
   if (open.value && props.endpoint && props.sender) {
     metadatas.value = {};
     view.value = 'input';
@@ -236,10 +237,11 @@ async function sendTx() {
         // update tx gas
         tx.fee.gas = (gas * 1.3).toFixed();
       })
-      .catch(() => {
-        // sending.value = false;
-        // error.value = "Failed to simulate tx gas: " + err;
-        advance.value = true;
+      .catch((err) => {
+        //   // sending.value = false;
+        // error.value = 'Failed to simulate tx gas: ' + err;
+        throw err;
+        //   advance.value = true;
       });
 
     const txRaw = await client.sign(tx);
