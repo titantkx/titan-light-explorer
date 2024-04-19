@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { formatSeconds } from '@/libs/utils';
 import {
-useBaseStore,
-useBlockchain,
-useFormatter,
-useParamStore,
-useStakingStore,
-useTxDialog,
-useValidatorRewardStore,
-useWalletStore
+  useBaseStore,
+  useBlockchain,
+  useFormatter,
+  useParamStore,
+  useStakingStore,
+  useTxDialog,
+  useValidatorRewardStore,
+  useWalletStore,
 } from '@/stores';
 import type { Key, SlashingParam, Validator } from '@/types';
 import { Icon } from '@iconify/vue';
@@ -22,7 +22,7 @@ const dialog = useTxDialog();
 const chainStore = useBlockchain();
 // const mintStore = useMintStore()
 const paramStore = useParamStore();
-const validatorRewardStore  = useValidatorRewardStore();
+const validatorRewardStore = useValidatorRewardStore();
 const wallet = useWalletStore();
 
 const cache = JSON.parse(localStorage.getItem('avatars') || '{}');
@@ -44,7 +44,7 @@ onMounted(() => {
   chainStore.rpc.getSlashingParams().then((res) => {
     slashing.value = res.params;
   });
-  validatorRewardStore.fetchParams();  
+  validatorRewardStore.fetchParams();
   paramStore.initial();
 });
 
@@ -332,7 +332,7 @@ loadAvatars();
       <span>
         <label
           for="create_validator"
-          class="btn btn-sm btn-primary rounded-md capitalize"
+          class="btn btn-sm btn-primary rounded-md capitalize m-0.5"
           @click="dialog.open('create_validator', {})"
           >{{ $t('staking.btn_create_validator') }}
         </label>
@@ -340,16 +340,17 @@ loadAvatars();
       <span>
         <label
           for="contribute_pool"
-          class="btn btn-sm btn-primary rounded-md capitalize"
+          class="btn btn-sm btn-primary rounded-md capitalize m-0.5"
           @click="dialog.open('contribute_pool', {})"
           >{{ $t('staking.btn_contribute_pool') }}
         </label>
       </span>
       <span
-        v-if="validatorRewardStore.params.authority===wallet.currentAddress">
+        v-if="validatorRewardStore.params.authority === wallet.currentAddress"
+      >
         <label
           for="update_apr"
-          class="btn btn-sm btn-primary rounded-md capitalize"
+          class="btn btn-sm btn-primary rounded-md capitalize m-0.5"
           @click="dialog.open('update_apr', {})"
           >{{ $t('staking.btn_update_apr') }}
         </label>
