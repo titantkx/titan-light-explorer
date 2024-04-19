@@ -1,13 +1,19 @@
 {
   "chain_name": "Titan",
   "api": [
-    "https://titan-lcd.titanlab.io:443"
+    "https://titan-lcd.titanlab.io:443",
+    "https://titan-lcd-tokyo.titanlab.io:443",
+    "https://titan-lcd-seoul.titanlab.io:443"
   ],
   "rpc": [
-    "https://titan-rpc.titanlab.io:443"
+    "https://titan-rpc.titanlab.io:443",
+    "https://titan-rpc-tokyo.titanlab.io:443",
+    "https://titan-rpc-seoul.titanlab.io:443"
   ],
   "json_rpc": [
-    "https://titan-json-rpc.titanlab.io:443"
+    "https://titan-json-rpc.titanlab.io:443",
+    "https://titan-json-rpc-tokyo.titanlab.io:443",
+    "https://titan-json-rpc-seoul.titanlab.io:443"
   ],
   "sdk_version": "v0.47.6-titan.4",
   "coin_type": "60",
