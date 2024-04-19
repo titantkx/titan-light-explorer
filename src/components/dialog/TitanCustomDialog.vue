@@ -116,7 +116,7 @@ const msgBox = ref({
 });
 const feeAmount = ref(2000);
 const feeDenom = ref('');
-const gasInfo = ref(200000);
+const gasInfo = ref(300000);
 const memo = ref('');
 const chainId = ref('cosmoshub-4');
 const broadcast = ref(BroadcastMode.SYNC);
@@ -212,7 +212,7 @@ async function sendTx() {
       signerAddress: props.sender,
       messages,
       fee: {
-        gas: '200000',
+        gas: '300000',
         amount: [{ amount: String(feeAmount.value), denom: feeDenom.value }],
       },
       memo: memo.value,
