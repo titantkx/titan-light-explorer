@@ -16,6 +16,7 @@ import {
 } from '../utils/type';
 import {
   createWallet,
+  keyType,
   type AbstractWallet,
   type WalletArgument,
   type WalletName,
@@ -47,7 +48,7 @@ export class UniClient {
     mode: BroadcastMode = BroadcastMode.SYNC
   ) {
     const pubkey = Any.fromPartial({
-      typeUrl: '/cosmos.crypto.ed25519.PubKey',
+      typeUrl: keyType(transaction.chainId),
       value: new Uint8Array(),
     });
     const txBodyEncodeObject: TxBodyEncodeObject = {
