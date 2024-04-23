@@ -46,7 +46,8 @@ const currName = ref('');
 blockchain.$subscribe((m, s) => {
   if (s.chainName !== currName.value) {
     currName.value = s.chainName;
-    store.loadDashboard();
+    // because duplicate call
+    // store.loadDashboard();
     walletStore.loadMyAsset();
     paramStore.handleAbciInfo();
   }
@@ -58,28 +59,59 @@ function shortName(name: string, id: string) {
     : name;
 }
 
-const comLinks = [
-  {
-    name: 'Website',
-    icon: 'mdi-web',
-    href: store.homepage,
-  },
-  {
-    name: 'Twitter',
-    icon: 'mdi-twitter',
-    href: store.twitter,
-  },
-  {
-    name: 'Telegram',
-    icon: 'mdi-telegram',
-    href: store.telegram,
-  },
-  {
-    name: 'Github',
-    icon: 'mdi-github',
-    href: store.github,
-  },
-];
+const comLinks = computed(() => {
+  let links: Array<{
+    name: string;
+    icon: string;
+    href: string;
+  }> = [];
+
+  if (!!store.homepage) {
+    links = [
+      ...links,
+      {
+        name: 'Website',
+        icon: 'mdi-web',
+        href: store.homepage,
+      },
+    ];
+  }
+
+  if (!!store.twitter) {
+    links = [
+      ...links,
+      {
+        name: 'Twitter',
+        icon: 'mdi-twitter',
+        href: store.twitter,
+      },
+    ];
+  }
+
+  if (!!store.telegram) {
+    links = [
+      ...links,
+      {
+        name: 'Telegram',
+        icon: 'mdi-telegram',
+        href: store.telegram,
+      },
+    ];
+  }
+
+  if (!!store.github) {
+    links = [
+      ...links,
+      {
+        name: 'Github',
+        icon: 'mdi-github',
+        href: store.github,
+      },
+    ];
+  }
+
+  return links;
+});
 
 // wallet box
 const change = computed(() => {
