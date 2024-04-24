@@ -1,4 +1,4 @@
-import { NetworkType, getNetworkType } from '@/libs/network';
+import { getNetworkType, NetworkType } from '@/libs/network';
 import type { Asset, Chain } from '@ping-pub/chain-registry-client/dist/types';
 import { defineStore } from 'pinia';
 import { get } from '../libs/http';

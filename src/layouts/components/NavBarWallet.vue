@@ -18,7 +18,11 @@ import {
   type ChainConfig,
 } from '@/stores';
 import { Icon } from '@iconify/vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
+
+const ethereum = (window as any).ethereum;
+const leap = (window as any).leap;
+const keplr = (window as any).keplr;
 
 const walletStore = useWalletStore();
 const chainStore = useBlockchain();
@@ -27,11 +31,12 @@ const dashboard = useDashboard();
 
 let showCopyToast = ref(0);
 const open = ref(false);
-const openAddChain = ref(false);
 const error = ref('');
 const conf = ref('');
 const sending = ref(false);
-const name = ref(WalletName.Keplr);
+const name = ref(
+  readWallet(chainStore?.defaultHDPath).wallet || WalletName.Keplr
+);
 const connected = ref(readWallet(chainStore?.defaultHDPath) as ConnectedWallet);
 const selected = ref({} as ChainConfig);
 
@@ -88,7 +93,7 @@ async function initData() {}
 
 async function checkWalletBeforeConnect() {
   if (name.value === WalletName.Metamask) {
-    if (!(window as any).ethereum) {
+    if (!ethereum) {
       return window.open(
         'https://metamask.app.link/dapp/titan-testnet-explorer-light.titanlab.io'
       );
@@ -96,10 +101,16 @@ async function checkWalletBeforeConnect() {
   }
 
   if (name.value === WalletName.Leap) {
-    if (!(window as any).leap) {
+    if (!leap) {
       return window.open(
         'https://leapcosmoswallet.page.link/Dv7TgMJQDGatW47F8'
       );
+    }
+  }
+
+  if (name.value === WalletName.Keplr) {
+    if (!keplr || !(window as any).getOfflineSigner) {
+      return window.open('https://www.keplr.app/download');
     }
   }
 }
@@ -144,27 +155,27 @@ async function initParamsForKeplr() {
       },
       currencies: [
         {
-          coinDenom: chain.assets[0].symbol,
-          coinMinimalDenom: chain.assets[0].base,
+          coinDenom: chain.assets[0]?.symbol,
+          coinMinimalDenom: chain.assets[0]?.base,
           coinDecimals,
-          coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+          coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
         },
       ],
       feeCurrencies: [
         {
-          coinDenom: chain.assets[0].symbol,
-          coinMinimalDenom: chain.assets[0].base,
+          coinDenom: chain.assets[0]?.symbol,
+          coinMinimalDenom: chain.assets[0]?.base,
           coinDecimals,
-          coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+          coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
           gasPriceStep,
         },
       ],
       gasPriceStep,
       stakeCurrency: {
-        coinDenom: chain.assets[0].symbol,
-        coinMinimalDenom: chain.assets[0].base,
+        coinDenom: chain.assets[0]?.symbol,
+        coinMinimalDenom: chain.assets[0]?.base,
         coinDecimals,
-        coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+        coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
       },
       features: chain.keplrFeatures || [],
     },
@@ -217,7 +228,7 @@ async function initParamsForLeap() {
           coinDenom: chain.assets[0].symbol,
           coinMinimalDenom: chain.assets[0].base,
           coinDecimals,
-          coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+          coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
         },
       ],
       feeCurrencies: [
@@ -225,16 +236,16 @@ async function initParamsForLeap() {
           coinDenom: chain.assets[0].symbol,
           coinMinimalDenom: chain.assets[0].base,
           coinDecimals,
-          coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+          coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
           gasPriceStep,
         },
       ],
       gasPriceStep,
       stakeCurrency: {
-        coinDenom: chain.assets[0].symbol,
-        coinMinimalDenom: chain.assets[0].base,
+        coinDenom: chain.assets[0]?.symbol,
+        coinMinimalDenom: chain.assets[0]?.base,
         coinDecimals,
-        coinGeckoId: chain.assets[0].coingecko_id || 'unknown',
+        coinGeckoId: chain.assets[0]?.coingecko_id || 'unknown',
       },
       features: chain.keplrFeatures || [],
       theme: {
@@ -301,72 +312,71 @@ async function initForMetamask() {
   );
 }
 
-async function connect() {
-  sending.value = true;
-  error.value = '';
+async function handleGetInfoAccount() {
   let accounts = [] as Account[];
-
-  await checkWalletBeforeConnect();
-
   try {
     const wa = createWallet(name.value, {
       chainId: baseStore?.currentChainId,
       hdPath: chainStore?.defaultHDPath,
       prefix: chainStore.current?.bech32Prefix || 'cosmos',
     });
-    await wa
-      .getAccounts()
-      .then((x) => {
-        accounts = x;
-        if (accounts.length > 0) {
-          const [first] = accounts;
-          connected.value = {
-            wallet: name.value,
-            cosmosAddress: first.address,
-            hdPath: chainStore?.defaultHDPath,
-          };
-          writeWallet(connected.value, chainStore?.defaultHDPath);
-          walletStateChange({
-            value: connected.value,
-          });
-        }
-        open.value = false;
-      })
-      .catch((e) => {
-        const { message } = e;
-        if (
-          message &&
-          (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
-            message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
-        ) {
-          if (name.value === WalletName.Leap) {
-            (window as any).leap
-              .experimentalSuggestChain(JSON.parse(conf.value))
-              .catch((e: any) => {
-                error.value = e;
-              });
-            return;
-          }
+    accounts = await wa.getAccounts();
 
-          if (name.value === WalletName.Keplr) {
-            (window as any).keplr
-              .experimentalSuggestChain(JSON.parse(conf.value))
-              .catch((e: any) => {
-                error.value = e;
-              });
-            return;
-          }
-        }
-
-        error.value = e;
+    if (accounts.length > 0) {
+      const [first] = accounts;
+      connected.value = {
+        wallet: name.value,
+        cosmosAddress: first.address,
+        hdPath: chainStore?.defaultHDPath,
+      };
+      writeWallet(connected.value, chainStore?.defaultHDPath);
+      walletStateChange({
+        value: connected.value,
       });
-  } catch (e: any) {
-    if (e.message.includes(ERROR_MESSAGE.INSTALL_KEPLR)) {
-      window.open('https://www.keplr.app/download');
     }
-    error.value = e.message;
+    error.value = '';
+    open.value = false;
+  } catch (e: any) {
+    throw e;
   }
-  sending.value = false;
+}
+
+async function connect() {
+  sending.value = true;
+  error.value = '';
+  try {
+    await checkWalletBeforeConnect();
+
+    await handleGetInfoAccount();
+
+    sending.value = false;
+  } catch (e: any) {
+    const { message } = e;
+    error.value = e;
+    sending.value = false;
+    if (
+      message &&
+      (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
+        message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
+    ) {
+      if (name.value === WalletName.Leap) {
+        await leap
+          .experimentalSuggestChain(JSON.parse(conf.value))
+          .catch((e: any) => {
+            error.value = e;
+          });
+      }
+
+      if (name.value === WalletName.Keplr) {
+        await keplr
+          .experimentalSuggestChain(JSON.parse(conf.value))
+          .catch((e: any) => {
+            error.value = e;
+          });
+      }
+      await handleGetInfoAccount();
+    }
+  }
 }
 
 async function copyAddress(address: string) {
@@ -384,6 +394,33 @@ async function copyAddress(address: string) {
   }
 }
 
+async function handleChangeAccountMetamask(accounts: any) {
+  const metamaskConnected: any = JSON.parse(
+    localStorage.getItem('metamask-connected') || ''
+  );
+
+  if (
+    accounts.length > 0 &&
+    metamaskConnected &&
+    metamaskConnected.length > 0
+  ) {
+    const [first] = accounts;
+    const findAddress = metamaskConnected.find(
+      (m: any) => m.metaMaskAddress === first
+    );
+
+    connected.value = {
+      wallet: findAddress.value,
+      cosmosAddress: findAddress.address,
+      hdPath: chainStore?.defaultHDPath,
+    };
+    writeWallet(connected.value, chainStore?.defaultHDPath);
+    walletStateChange({
+      value: connected.value,
+    });
+  }
+}
+
 const tipMsg = computed(() => {
   return showCopyToast.value === 2
     ? { class: 'error', msg: 'Copy Error!' }
@@ -392,6 +429,44 @@ const tipMsg = computed(() => {
 
 const walletList = computed(() => {
   return initListWallet;
+});
+
+watchEffect(() => {
+  if (name.value === WalletName.Keplr) {
+    window.addEventListener('keplr_keystorechange', () => {
+      walletStore.disconnect();
+      connect();
+    });
+
+    return () =>
+      window.removeEventListener('keplr_keystorechange', () => {
+        walletStore.disconnect();
+        connect();
+      });
+  }
+
+  if (name.value === WalletName.Leap) {
+    window.addEventListener('leap_keystorechange', () => {
+      walletStore.disconnect();
+      connect();
+    });
+
+    return () =>
+      window.removeEventListener('leap_keystorechange', () => {
+        walletStore.disconnect();
+        connect();
+      });
+  }
+
+  if (name.value === WalletName.Metamask) {
+    ethereum.on('accountsChanged', handleChangeAccountMetamask);
+
+    return () =>
+      ethereum.removeEventListener(
+        'accountsChanged',
+        handleChangeAccountMetamask
+      );
+  }
 });
 </script>
 

@@ -9,7 +9,7 @@ import {
   useBaseStore,
   useGovStore,
   useStakingStore,
-  useWalletStore
+  useWalletStore,
 } from '.';
 import {
   EndpointType,
