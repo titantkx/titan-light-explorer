@@ -66,6 +66,7 @@ export class MetamaskWallet implements AbstractWallet {
       address: ethToEthermint(address, this.prefix),
       algo: 'secp256k1',
       pubkey: pk,
+      metaMaskAddress: address,
     }));
 
     localStorage.setItem('metamask-connected', JSON.stringify(connected));

@@ -57,6 +57,10 @@ const units = computed(() => {
 });
 
 const isValid = computed(() => {
+  const convert = new TokenUnitConverter(props.metadata);
+  const base = delegation.value?.balance || { amount: '', denom: '' };
+  const maxValueInput = convert.baseToUnit(base, amountDenom.value);
+
   let ok = true;
   let error = '';
   if (!props.sender) {
@@ -70,6 +74,10 @@ const isValid = computed(() => {
   if (!(Number(amount.value) > 0)) {
     ok = false;
     error = 'Amount should be great than 0';
+  }
+  if (Number(amount.value) > Number(maxValueInput.amount)) {
+    ok = false;
+    error = `Amount should be less than or equal ${maxValueInput.amount}`;
   }
   return { ok, error };
 });
