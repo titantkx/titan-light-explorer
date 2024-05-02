@@ -1,3 +1,5 @@
+import { Menu } from '@/types/menu';
+
 export function getLocalObject(name: string) {
   const text = localStorage.getItem(name);
   if (text) {
@@ -51,10 +53,11 @@ export function formatTokenAmount(
   tokenDenom = 'uatom',
   format = true
 ) {
-  const denom = typeof tokenDenom === 'string'
-    ? tokenDenom
-    // @ts-ignore
-    : tokenDenom?.denom_trace?.base_denom;
+  const denom =
+    typeof tokenDenom === 'string'
+      ? tokenDenom
+      : // @ts-ignore
+        tokenDenom?.denom_trace?.base_denom;
   let amount = 0;
   const asset = assets.find((a: any) => a.base === denom);
   let exp = asset
@@ -104,24 +107,24 @@ export function isHexAddress(v: any) {
 }
 
 export function isBech32Address(v?: string) {
-  if(!v) return ""
-  const pattern = /^[a-z\d]+1[a-z\d]{38}$/g
-  return String(v).search(pattern) > -1
+  if (!v) return '';
+  const pattern = /^[a-z\d]+1[a-z\d]{38}$/g;
+  return String(v).search(pattern) > -1;
 }
 
 export function formatSeconds(value?: string) {
-  if(!value) return ''
-  const duration = Number(value.replace(/s/, ''))
-  if(duration > 24*60*60) {
-    return `${(duration / ( 24 * 60 * 60)).toFixed()} days`
+  if (!value) return '';
+  const duration = Number(value.replace(/s/, ''));
+  if (duration > 24 * 60 * 60) {
+    return `${(duration / (24 * 60 * 60)).toFixed()} days`;
   }
-  if(duration > 60*60) {
-    return `${(duration / (60 * 60)).toFixed()} hours`
-  }    
-  if(duration > 60) {
-    return `${duration / 60} mins`
+  if (duration > 60 * 60) {
+    return `${(duration / (60 * 60)).toFixed()} hours`;
   }
-  return value
+  if (duration > 60) {
+    return `${duration / 60} mins`;
+  }
+  return value;
 }
 
 export function hexToRgb(hex: string) {
@@ -187,4 +190,34 @@ export function rgbToHsl(color: string) {
     s,
     l,
   };
+}
+
+export function handleIconForMenu(menuName: any) {
+  switch (menuName) {
+    case Menu.DASHBOARD:
+      return 'iconoir:home';
+    case Menu.GOVERNANCE:
+      return 'mdi:bank-outline';
+    case Menu.STAKING:
+      return 'mdi:wallet-outline';
+    case Menu.BLOCKS:
+      return 'mdi:cube-outline';
+    case Menu.UPTIME:
+      return 'icon-park-outline:alarm-clock';
+    case Menu.IBC:
+      return 'mingcute:three-circles-line';
+    case Menu.SUPPLY:
+      return 'material-symbols:forklift-rounded';
+    case Menu.PARAMETERS:
+      return 'material-symbols:avg-pace';
+    case Menu.CONSENSUS:
+      return 'material-symbols:account-tree-outline';
+    case Menu.COSMWASM:
+      return 'ic:baseline-adjust';
+    case Menu.STATE_SYNC:
+      return 'material-symbols:sync-outline';
+
+    default:
+      break;
+  }
 }

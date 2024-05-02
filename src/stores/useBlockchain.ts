@@ -1,6 +1,6 @@
 import type { NavSectionTitle, VerticalNavItems } from '@/layouts/types';
 import { CosmosRestClient } from '@/libs/client';
-import { hexToRgb, rgbToHsl } from '@/libs/utils';
+import { handleIconForMenu, hexToRgb, rgbToHsl } from '@/libs/utils';
 import { useBlockModule } from '@/modules/[chain]/block/block';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -81,7 +81,7 @@ export const useBlockchain = defineStore('blockchain', {
               .map((x) => ({
                 title: `module.${x.meta.i18n}`,
                 to: { path: x.path.replace(':chain', this.chainName) },
-                icon: { icon: 'mdi-chevron-right', size: '22' },
+                icon: { icon: handleIconForMenu(x.meta.i18n), size: '22' },
                 i18n: true,
                 order: Number(x.meta.order || 100),
               }))
