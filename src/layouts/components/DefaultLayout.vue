@@ -138,8 +138,10 @@ function selected(route: any, nav: NavLink) {
               >
                 <Icon
                   v-if="!el?.icon?.image"
-                  icon="mdi:chevron-right"
+                  :icon="el?.icon?.icon"
                   class="mr-2 ml-3"
+                  width="20px"
+                  height="20px"
                   :class="{
                     'text-white':
                       $route.path === el?.to?.path &&

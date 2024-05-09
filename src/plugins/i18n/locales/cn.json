@@ -1,6 +1,6 @@
 {
   "module": {
-    "dashboard": "面板首页",
+    "dashboard": "概述",
     "blocks": "区块和交易",
     "staking": "质押生息",
     "governance": "社区治理",

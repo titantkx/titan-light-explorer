@@ -1,6 +1,6 @@
 import type { NavSectionTitle, VerticalNavItems } from '@/layouts/types';
 import { CosmosRestClient } from '@/libs/client';
-import { hexToRgb, rgbToHsl } from '@/libs/utils';
+import { handleIconForMenu, hexToRgb, rgbToHsl } from '@/libs/utils';
 import { useBlockModule } from '@/modules/[chain]/block/block';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -9,7 +9,7 @@ import {
   useBaseStore,
   useGovStore,
   useStakingStore,
-  useWalletStore
+  useWalletStore,
 } from '.';
 import {
   EndpointType,
@@ -53,6 +53,7 @@ export const useBlockchain = defineStore('blockchain', {
     computedChainMenu() {
       let currNavItem: VerticalNavItems = [];
       const router = useRouter();
+      console.log(router?.getRoutes());
       const routes = router?.getRoutes() || [];
       if (this.current && routes) {
         if (this.current?.themeColor) {
@@ -81,7 +82,7 @@ export const useBlockchain = defineStore('blockchain', {
               .map((x) => ({
                 title: `module.${x.meta.i18n}`,
                 to: { path: x.path.replace(':chain', this.chainName) },
-                icon: { icon: 'mdi-chevron-right', size: '22' },
+                icon: { icon: handleIconForMenu(x.meta.i18n), size: '22' },
                 i18n: true,
                 order: Number(x.meta.order || 100),
               }))
@@ -89,6 +90,8 @@ export const useBlockchain = defineStore('blockchain', {
           },
         ];
       }
+
+      console.log(currNavItem);
 
       // combine all together
       return [...currNavItem, { heading: 'Ecosystem' } as NavSectionTitle];

@@ -1,6 +1,6 @@
 {
   "module": {
-    "dashboard": "Dashboard",
+    "dashboard": "Overview",
     "blocks": "Blocks",
     "staking": "Staking",
     "governance": "Governance",

@@ -9,10 +9,10 @@ export const initListWallet = [
     wallet: WalletName.Leap,
     logo: 'https://assets.leapwallet.io/logos/leap-cosmos-logo.svg',
   },
-  {
-    wallet: WalletName.Metamask,
-    logo: 'https://ping.pub/logos/metamask.png',
-  },
+  // {
+  //   wallet: WalletName.Metamask,
+  //   logo: 'https://ping.pub/logos/metamask.png',
+  // },
 ];
 
 export enum ERROR_MESSAGE {

@@ -12,3 +12,10 @@ export function getNetworkType(): NetworkType {
   }
   return NetworkType.Mainnet;
 }
+
+export function handleChainNameToPath(chainName: string): string {
+  if (getNetworkType() === NetworkType.Testnet) {
+    return chainName.toLocaleLowerCase().replace(' ', '');
+  }
+  return chainName.toLocaleLowerCase();
+}

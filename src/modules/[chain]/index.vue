@@ -529,13 +529,13 @@ const amount = computed({
         </table>
       </div>
 
-      <div class="grid grid-cols-2 gap-4 px-4 pb-6 mt-4">
-        <label
+      <div class="grid grid-cols-1 gap-4 px-4 pb-6 mt-4">
+        <!-- <label
           for="send"
           class="btn !bg-yes !border-yes text-white"
           @click="dialog.open('send', {}, updateState)"
           >{{ $t('account.btn_send') }}</label
-        >
+        > -->
         <label
           for="delegate"
           class="btn !bg-info !border-info text-white"
