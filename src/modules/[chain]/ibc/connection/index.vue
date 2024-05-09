@@ -2,13 +2,13 @@
 // router.push(`/${props.chain}/ibc/connection/connection-0`)
 </script>
 <template>
-    <div></div>
+  <div></div>
 </template>
 <route>
     {
       meta: {
         i18n: 'ibc',
-        order: 9
+        order: 8
       }
     }
   </route>

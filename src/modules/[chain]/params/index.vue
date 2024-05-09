@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useParamStore } from '@/stores';
-import { ref, onMounted } from 'vue';
 import CardParameter from '@/components/CardParameter.vue';
 import ArrayObjectElement from '@/components/dynamic/ArrayObjectElement.vue';
+import { useParamStore } from '@/stores';
+import { onMounted, ref } from 'vue';
 const store = useParamStore();
 const chain = ref(store.chain);
 onMounted(() => {
@@ -60,7 +60,7 @@ onMounted(() => {
 {
   meta: {
     i18n: 'parameters',
-    order: 50
+    order: 6
   }
 }
 </route>

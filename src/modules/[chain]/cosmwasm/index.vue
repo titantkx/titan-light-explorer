@@ -3,8 +3,8 @@ import router from '@/router';
 import { useTxDialog } from '@/stores';
 import { PageRequest } from '@/types';
 import { ref } from 'vue';
-import type { PaginabledCodeInfos } from './types';
 import { useWasmStore } from './WasmStore';
+import type { PaginabledCodeInfos } from './types';
 
 const props = defineProps(['chain']);
 
@@ -98,7 +98,8 @@ function myContracts() {
 <route>
     {
       meta: {
-        i18n: 'cosmwasm'
+        i18n: 'cosmwasm',
+        order: 9
       }
     }
 </route>

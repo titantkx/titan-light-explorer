@@ -3,12 +3,12 @@ import PriceMarketChart from '@/components/charts/PriceMarketChart.vue';
 import MdEditor from 'md-editor-v3';
 
 import {
-  useBlockchain,
-  useFormatter,
-  useParamStore,
-  useStakingStore,
-  useTxDialog,
-  useWalletStore,
+useBlockchain,
+useFormatter,
+useParamStore,
+useStakingStore,
+useTxDialog,
+useWalletStore,
 } from '@/stores';
 import { Icon } from '@iconify/vue';
 import { computed } from '@vue/reactivity';
