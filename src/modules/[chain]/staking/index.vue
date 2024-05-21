@@ -578,7 +578,7 @@ loadAvatars();
   {
     meta: {
       i18n: 'staking',
-      order: 2
+      order: 3
     }
   }
 </route>
