@@ -359,6 +359,7 @@ async function connect() {
       (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
         message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
     ) {
+      error.value = '';
       if (name.value === WalletName.Leap) {
         await leap
           .experimentalSuggestChain(JSON.parse(conf.value))
