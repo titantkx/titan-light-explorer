@@ -195,7 +195,7 @@ const amount = computed({
 
     <div
       v-if="coinInfo && coinInfo.name"
-      class="bg-base-100 rounded shadow mb-4"
+      class="bg-base-100 rounded shadow mt-4"
     >
       <div class="grid grid-cols-2 md:grid-cols-3 p-4">
         <div class="col-span-2 md:col-span-1">
