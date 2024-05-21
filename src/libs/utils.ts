@@ -216,6 +216,8 @@ export function handleIconForMenu(menuName: any) {
       return 'ic:baseline-adjust';
     case Menu.STATE_SYNC:
       return 'material-symbols:sync-outline';
+    case Menu.USER:
+      return 'mdi:user';
 
     default:
       break;

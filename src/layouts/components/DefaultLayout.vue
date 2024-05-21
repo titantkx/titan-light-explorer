@@ -11,6 +11,7 @@ import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue';
 import { useBlockchain } from '@/stores';
 import { useDashboard } from '@/stores/useDashboard';
 
+import { NetworkType, getNetworkType } from '@/libs/network';
 import type {
   NavGroup,
   NavLink,
@@ -68,7 +69,21 @@ function selected(route: any, nav: NavLink) {
     >
       <div class="flex justify-between mt-1 pl-4 py-4 mb-1">
         <RouterLink to="/" class="flex items-center">
-          <img class="h-10" src="../../assets/titanchain-logo.svg" />
+          <div class="flex flex-col">
+            <img class="h-10" src="../../assets/titanchain-logo.svg" />
+            <div
+              v-if="getNetworkType() === NetworkType.Testnet"
+              className="badge bg-orange-600 text-white gap-2 ml-12"
+            >
+              Testnet
+            </div>
+            <div
+              v-if="getNetworkType() === NetworkType.Mainnet"
+              className="badge bg-orange-600 text-white gap-2 ml-12"
+            >
+              Mainnet
+            </div>
+          </div>
         </RouterLink>
         <div
           class="pr-4 cursor-pointer xl:!hidden"
@@ -91,7 +106,7 @@ function selected(route: any, nav: NavLink) {
             'collapse-close': index === 0 && !sidebarOpen,
           }"
         >
-          <input type="checkbox" class="!h-10 block" />
+          <!-- <input type="checkbox" class="!h-10 block" />
           <div
             class="collapse-title !py-0 px-4 flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-[#29292b]"
           >
@@ -121,7 +136,7 @@ function selected(route: any, nav: NavLink) {
             >
               {{ item?.badgeContent }}
             </div>
-          </div>
+          </div> -->
           <div class="collapse-content">
             <div
               v-for="(el, key) of item?.children"

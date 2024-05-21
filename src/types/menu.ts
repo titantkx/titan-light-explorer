@@ -10,4 +10,5 @@ export enum Menu {
   CONSENSUS = 'consensus',
   COSMWASM = 'cosmwasm',
   STATE_SYNC = 'state-sync',
+  USER = 'user',
 }
