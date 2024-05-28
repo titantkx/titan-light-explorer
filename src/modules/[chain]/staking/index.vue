@@ -337,7 +337,9 @@ loadAvatars();
           >{{ $t('staking.btn_create_validator') }}
         </label>
       </span>
-      <span>
+      <span
+        v-if="validatorRewardStore.params.authority === wallet.currentAddress"
+      >
         <label
           for="contribute_pool"
           class="btn btn-sm btn-primary rounded-md capitalize m-0.5"
