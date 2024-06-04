@@ -2,7 +2,7 @@
   "module": {
     "dashboard": "Ringkasan",
     "blocks": "Kumpulan Blok",
-    "staking": "Staking",
+    "staking": "Mining",
     "governance": "Tata Kelola",
     "parameters": "Parameter",
     "uptime": "Pemantauan",
