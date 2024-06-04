@@ -262,9 +262,7 @@ export class CosmosRestClient extends BaseRestClient<RequestRegistry> {
   // tx
   async getTxsBySender(sender: string, page?: PageRequest) {
     if (!page) page = new PageRequest();
-    const query = `?order_by=2&events=message.sender='${sender}'&pagination.limit=${
-      page.limit
-    }&pagination.offset=${page.offset || 0}`;
+    const query = `?order_by=2&events=message.sender='${sender}'&${page.toNewQueryString()}`;
     return this.request(this.registry.tx_txs, {}, query);
   }
   // query ibc sending msgs
@@ -276,7 +274,7 @@ export class CosmosRestClient extends BaseRestClient<RequestRegistry> {
     return this.request(
       this.registry.tx_txs,
       params,
-      `${query}&${page.toQueryString()}`
+      `${query}&${page.toNewQueryString()}`
     );
   }
   async getTxsAt(height: string | number) {
