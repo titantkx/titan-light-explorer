@@ -413,7 +413,7 @@ const tipMsg = computed(() => {
               {{ format.formatToken2(i) }}
             </div>
           </div>
-          <div class="">
+          <div class="" v-if="addresses.account === wallet.currentAddress">
             <label
               for="withdraw_commission"
               class="btn btn-primary w-full"
