@@ -49,7 +49,7 @@ export const useParamStore = defineStore('paramstore', {
       items: [] as Array<any>,
     },
     staking: {
-      title: 'Staking Parameters',
+      title: 'Mining Parameters',
       items: [] as Array<any>,
     },
     distribution: {

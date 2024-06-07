@@ -79,7 +79,6 @@ async function initParamsForKeplr() {
 
 function suggest() {
   const chainInfo = JSON.parse(conf.value) as ChainInfo;
-  console.log(chainInfo);
   addTitanChain(chainInfo).catch((e) => {
     error.value = e;
   });

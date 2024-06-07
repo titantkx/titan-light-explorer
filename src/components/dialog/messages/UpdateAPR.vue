@@ -21,8 +21,7 @@ const stakingDenom = ref('');
 const rate = ref('');
 
 const msgs = computed(() => {
-
-  const rateString = (BigNumber(rate.value).div(100)).toString();
+  const rateString = BigNumber(rate.value).div(100).toString();
 
   const msg: MsgSetRateEncodeObject = {
     typeUrl: '/titan.validatorreward.MsgSetRate',
@@ -34,7 +33,6 @@ const msgs = computed(() => {
 
   return [msg];
 });
-
 
 const isValid = computed(() => {
   let ok = true;
@@ -58,8 +56,9 @@ function initial() {
     stakingDenom.value = x.params.bond_denom;
   });
   getValidatorRewardParams(props.endpoint).then((x) => {
-    console.log('x.params.rate', x.params.rate)
-    rate.value = Decimal.fromUserInput(x.params.rate, 18).multiply(Uint32.fromString('100')).toString();
+    rate.value = Decimal.fromUserInput(x.params.rate, 18)
+      .multiply(Uint32.fromString('100'))
+      .toString();
   });
 }
 
@@ -91,7 +90,6 @@ defineExpose({ msgs, isValid, initial });
         <span class="self-center ml-2">%</span>
       </div>
     </div>
-
   </div>
 </template>
 <script lang="ts">

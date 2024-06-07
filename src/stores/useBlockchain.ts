@@ -53,7 +53,6 @@ export const useBlockchain = defineStore('blockchain', {
     computedChainMenu() {
       let currNavItem: VerticalNavItems = [];
       const router = useRouter();
-      console.log(router?.getRoutes());
       const routes = router?.getRoutes() || [];
       if (this.current && routes) {
         if (this.current?.themeColor) {
@@ -90,9 +89,6 @@ export const useBlockchain = defineStore('blockchain', {
           },
         ];
       }
-
-      console.log(currNavItem);
-
       // combine all together
       return [...currNavItem, { heading: 'Ecosystem' } as NavSectionTitle];
     },
