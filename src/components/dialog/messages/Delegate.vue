@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, type ComputedRef, type PropType } from 'vue';
+import { computed, onUpdated, ref, type ComputedRef, type PropType } from 'vue';
 import { TokenUnitConverter } from '../../../libs/utils/TokenUnitConverter';
 import { decimal2percent } from '../../../libs/utils/format';
 import {
@@ -135,6 +135,8 @@ function initial() {
   });
 }
 
+onUpdated(() => (validator.value = list.value[0]?.operator_address));
+
 defineExpose({ msgs, isValid, initial });
 </script>
 <template>
@@ -177,14 +179,15 @@ defineExpose({ msgs, isValid, initial });
       <label class="label">
         <span class="label-text">Amount</span>
         <span>
-          {{ available?.display.amount }} {{ available?.display.denom }}
+          Available: {{ available?.display.amount }}
+          {{ available?.display.denom }}
         </span>
       </label>
       <label class="join">
         <input
           v-model="amount"
           type="number"
-          :placeholder="`Available: ${available?.display.amount}`"
+          :placeholder="`Input amount`"
           class="input border border-gray-300 dark:border-gray-600 w-full join-item dark:text-white"
         />
         <select

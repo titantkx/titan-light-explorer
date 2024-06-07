@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Countdown from '@/components/Countdown.vue';
 import DonutChart from '@/components/charts/DonutChart.vue';
+import Countdown from '@/components/Countdown.vue';
 import DynamicComponent from '@/components/dynamic/DynamicComponent.vue';
 import {
   useBlockchain,
@@ -231,7 +231,7 @@ const tipMsg = computed(() => {
               />
             </div>
 
-            <div class="flex gap-x-1">
+            <!-- <div class="flex gap-x-1">
               <span v-if="showAddress(account)" class="text-xs truncate">
                 {{ toEthAddr(showAddress(account)) }}</span
               >
@@ -241,7 +241,7 @@ const tipMsg = computed(() => {
                 v-show="showAddress(account)"
                 @click="copyWebsite(toEthAddr(showAddress(account)) || '')"
               />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -448,10 +448,10 @@ const tipMsg = computed(() => {
             >{{ $t('account.btn_delegate') }}</label
           >
           <label
-            for="withdraw"
+            for="withdraw_all"
             class="btn btn-primary btn-sm"
-            @click="dialog.open('withdraw', {}, updateEvent)"
-            >{{ $t('account.btn_withdraw') }}</label
+            @click="dialog.open('withdraw_all', {}, updateEvent)"
+            >{{ $t('account.btn_withdraw_all') }}</label
           >
         </div>
       </div>
@@ -572,11 +572,15 @@ const tipMsg = computed(() => {
                 colspan="10"
               >
                 <RouterLink :to="`/${chain}/staking/${v.validator_address}`">{{
+                  format.validatorFromBech32(v.validator_address) ||
                   v.validator_address
                 }}</RouterLink>
               </td>
             </tr>
-            <tr v-for="entry in v.entries">
+            <tr
+              v-for="(entry, index) in v.entries"
+              :key="`entry-table-row-${index}`"
+            >
               <td class="py-3">{{ entry.creation_height }}</td>
               <td class="py-3">
                 {{

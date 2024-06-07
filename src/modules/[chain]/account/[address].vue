@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import Countdown from '@/components/Countdown.vue';
 import DonutChart from '@/components/charts/DonutChart.vue';
+import Countdown from '@/components/Countdown.vue';
 import DynamicComponent from '@/components/dynamic/DynamicComponent.vue';
 import {
   useBlockchain,
   useFormatter,
   useStakingStore,
   useTxDialog,
+  useWalletStore,
 } from '@/stores';
 import type {
   AuthAccount,
@@ -43,6 +44,7 @@ const blockchain = useBlockchain();
 const stakingStore = useStakingStore();
 const dialog = useTxDialog();
 const format = useFormatter();
+const walletStore = useWalletStore();
 const account = ref({} as AuthAccount);
 const txs = ref({} as TxResponse[]);
 const delegations = ref([] as Delegation[]);
@@ -221,7 +223,7 @@ const tipMsg = computed(() => {
               />
             </div>
 
-            <div class="flex gap-x-1">
+            <!-- <div class="flex gap-x-1">
               <span v-if="showAddress(account)" class="text-xs truncate">
                 {{ toEthAddr(showAddress(account)) }}</span
               >
@@ -231,7 +233,7 @@ const tipMsg = computed(() => {
                 v-show="showAddress(account)"
                 @click="copyWebsite(toEthAddr(showAddress(account)) || '')"
               />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -244,6 +246,7 @@ const tipMsg = computed(() => {
         <!-- button -->
         <div class="flex justify-end mb-4 pr-5">
           <label
+            v-if="showAddress(account) === walletStore?.currentAddress"
             for="send"
             class="btn btn-primary btn-sm mr-2"
             @click="dialog.open('send', {}, updateEvent)"
@@ -430,18 +433,21 @@ const tipMsg = computed(() => {
     <div class="bg-base-100 px-4 pt-3 pb-4 rounded mb-4 shadow">
       <div class="flex justify-between">
         <h2 class="card-title mb-4">{{ $t('account.delegations') }}</h2>
+        { }
         <div class="flex justify-end mb-4">
           <label
+            v-if="showAddress(account) === walletStore?.currentAddress"
             for="delegate"
             class="btn btn-primary btn-sm mr-2"
             @click="dialog.open('delegate', {}, updateEvent)"
             >{{ $t('account.btn_delegate') }}</label
           >
           <label
-            for="withdraw"
+            v-if="showAddress(account) === walletStore?.currentAddress"
+            for="withdraw_all"
             class="btn btn-primary btn-sm"
-            @click="dialog.open('withdraw', {}, updateEvent)"
-            >{{ $t('account.btn_withdraw') }}</label
+            @click="dialog.open('withdraw_all', {}, updateEvent)"
+            >{{ $t('account.btn_withdraw_all') }}</label
           >
         </div>
       </div>
@@ -490,6 +496,7 @@ const tipMsg = computed(() => {
               <td class="py-3">
                 <div v-if="v.balance" class="flex justify-end">
                   <label
+                    v-if="showAddress(account) === walletStore?.currentAddress"
                     for="delegate"
                     class="btn btn-primary btn-xs mr-2"
                     @click="
@@ -504,6 +511,7 @@ const tipMsg = computed(() => {
                     >{{ $t('account.btn_delegate') }}</label
                   >
                   <label
+                    v-if="showAddress(account) === walletStore?.currentAddress"
                     for="redelegate"
                     class="btn btn-primary btn-xs mr-2"
                     @click="
@@ -518,6 +526,7 @@ const tipMsg = computed(() => {
                     >{{ $t('account.btn_redelegate') }}</label
                   >
                   <label
+                    v-if="showAddress(account) === walletStore?.currentAddress"
                     for="unbond"
                     class="btn btn-primary btn-xs"
                     @click="
@@ -562,6 +571,7 @@ const tipMsg = computed(() => {
                 colspan="10"
               >
                 <RouterLink :to="`/${chain}/staking/${v.validator_address}`">{{
+                  format.validatorFromBech32(v.validator_address) ||
                   v.validator_address
                 }}</RouterLink>
               </td>

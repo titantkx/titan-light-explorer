@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, type ComputedRef, type PropType } from 'vue';
+import { computed, onUpdated, ref, type ComputedRef, type PropType } from 'vue';
 import { TokenUnitConverter } from '../../../libs/utils/TokenUnitConverter';
 import { decimal2percent } from '../../../libs/utils/format';
 import {
@@ -94,13 +94,10 @@ const units = computed(() => {
 const isValid = computed(() => {
   let ok = true;
   let error = '';
+
   if (!validator.value) {
     ok = false;
-    error = 'Validator is empty';
-  }
-  if (!validator.value) {
-    ok = false;
-    error = 'Validator is empty';
+    error = 'Destination Validator is empty';
   }
   if (!(Number(amount.value) > 0)) {
     ok = false;
@@ -130,6 +127,8 @@ function initial() {
     )?.operator_address;
   });
 }
+
+onUpdated(() => (validator.value = list.value[0]?.operator_address));
 
 defineExpose({ msgs, isValid, initial });
 </script>
@@ -163,8 +162,9 @@ defineExpose({ msgs, isValid, initial });
       <select
         v-model="validator"
         class="select select-bordered dark:text-white"
+        placeholder="Select a validator"
       >
-        <option value="">Select a validator</option>
+        <option selected disabled>Select a validator</option>
         <option
           v-for="(v, index) in list"
           :value="v.operator_address"
@@ -181,14 +181,15 @@ defineExpose({ msgs, isValid, initial });
       <label class="label">
         <span class="label-text">Amount</span>
         <span
-          >{{ available?.display.amount }}{{ available?.display.denom }}</span
+          >Available: {{ available?.display.amount
+          }}{{ available?.display.denom }}</span
         >
       </label>
       <label class="input-group">
         <input
           v-model="amount"
           type="number"
-          :placeholder="`Available: ${available?.display.amount}${available?.display.denom}`"
+          :placeholder="`Input amount`"
           class="input border border-gray-300 dark:border-gray-600 w-full dark:text-white"
         />
         <select

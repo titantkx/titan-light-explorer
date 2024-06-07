@@ -57,8 +57,11 @@ const msgType = computed(() => {
       return Send;
     case 'delegate':
       return Delegate;
+
     case 'withdraw':
+    case 'withdraw_all':
       return Withdraw;
+
     case 'withdraw_commission':
       return WithdrawCommission;
     case 'redelegate':
@@ -462,7 +465,10 @@ function fetchTx(tx: string) {
                 :disabled="sending"
               >
                 <span v-if="sending" class="loading loading-spinner"></span>
-                Send
+                <span v-if="props.type?.toLowerCase() === 'withdraw_all'">
+                  Confirm
+                </span>
+                <span v-else>Send</span>
               </button>
             </div>
           </div>
