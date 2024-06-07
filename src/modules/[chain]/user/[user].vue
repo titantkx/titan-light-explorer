@@ -562,7 +562,6 @@ const tipMsg = computed(() => {
               <th class="py-3">{{ $t('account.creation_height') }}</th>
               <th class="py-3">{{ $t('account.initial_balance') }}</th>
               <th class="py-3">{{ $t('account.balance') }}</th>
-              <th class="py-3">{{ $t('account.description') }}</th>
               <th class="py-3">{{ $t('account.completion_time') }}</th>
             </tr>
           </thead>
@@ -578,7 +577,10 @@ const tipMsg = computed(() => {
                 }}</RouterLink>
               </td>
             </tr>
-            <tr v-for="entry in v.entries">
+            <tr
+              v-for="(entry, index) in v.entries"
+              :key="`entry-table-row-${index}`"
+            >
               <td class="py-3">{{ entry.creation_height }}</td>
               <td class="py-3">
                 {{
@@ -604,7 +606,6 @@ const tipMsg = computed(() => {
                   )
                 }}
               </td>
-              <td class="py-3">{{ entry.description }}</td>
               <td class="py-3">
                 <Countdown
                   :time="
