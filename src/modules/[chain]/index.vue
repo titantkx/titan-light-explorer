@@ -239,9 +239,10 @@ const amount = computed({
                       {{ ticker?.market?.name || '' }}
                     </div>
                     <div class="text-info text-sm">
-                      {{ shortName(ticker?.base, ticker.coin_id) }}/{{
+                      {{ shortName(ticker?.base, ticker.coin_id) }}
+                      <!-- /{{
                         shortName(ticker?.target, ticker.target_coin_id)
-                      }}
+                      }} -->
                     </div>
                   </div>
 
@@ -257,7 +258,7 @@ const amount = computed({
                   </div>
                 </div>
               </label>
-              <div class="dropdown-content pt-1">
+              <!-- <div class="dropdown-content pt-1">
                 <div class="h-64 overflow-auto w-full shadow rounded">
                   <ul class="menu w-full bg-gray-100 rounded dark:bg-[#384059]">
                     <li
@@ -289,7 +290,7 @@ const amount = computed({
                     </li>
                   </ul>
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="flex">
@@ -399,7 +400,8 @@ const amount = computed({
       </div>
       <div class="mx-4 flex flex-wrap items-center">
         <div
-          v-for="tag in coinInfo.categories"
+          v-for="(tag, index) in coinInfo.categories"
+          :key="`tag-row-${index}`"
           class="mr-2 mb-4 text-xs bg-gray-100 dark:bg-[#384059] px-3 rounded-full py-1"
         >
           {{ tag }}

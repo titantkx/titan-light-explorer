@@ -189,7 +189,7 @@ defineExpose({ msgs, isValid, initial });
         <input
           v-model="amount"
           type="number"
-          :placeholder="`Input amount: ${available?.display.amount} ${available?.display.denom}`"
+          :placeholder="`Input amount`"
           class="input border border-gray-300 dark:border-gray-600 w-full dark:text-white"
         />
         <select
