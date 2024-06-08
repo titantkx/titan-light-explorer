@@ -166,7 +166,7 @@ defineExpose({ msgs, isValid, initial });
         v-model="validator"
         class="select select-bordered dark:text-white"
       >
-        <option value="">Select a validator</option>
+        <option value="" disabled>Select a validator</option>
         <option
           v-for="(v, index) in list"
           :value="v.operator_address"

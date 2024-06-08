@@ -128,7 +128,11 @@ function initial() {
   });
 }
 
-onUpdated(() => (validator.value = list.value[0]?.operator_address));
+onUpdated(() => {
+  if (!validator.value) {
+    validator.value = list.value[0]?.operator_address;
+  }
+});
 
 defineExpose({ msgs, isValid, initial });
 </script>
