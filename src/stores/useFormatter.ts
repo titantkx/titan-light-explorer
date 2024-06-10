@@ -253,7 +253,7 @@ export const useFormatter = defineStore('formatter', {
           return `0 ${denom.substring(0, 10)}`;
         }
 
-        if (amount < 0.01) {
+        if (amount < 0.1) {
           fmt = '0.[000000]';
         }
 
