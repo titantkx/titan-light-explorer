@@ -97,14 +97,22 @@ const units = computed(() => {
 const isValid = computed(() => {
   let ok = true;
   let error = '';
+
   if (!validator.value) {
     ok = false;
     error = 'Validator is empty';
   }
+
   if (!(Number(amount.value) > 0)) {
     ok = false;
     error = 'Amount should be great than 0';
   }
+
+  if (Number(amount.value) > Number(available.value?.display?.amount)) {
+    ok = false;
+    error = 'Insufficient balance';
+  }
+
   if (!amountDenom.value) {
     ok = false;
     error = 'Amount Denom is empty';
