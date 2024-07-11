@@ -266,7 +266,7 @@ export const useFormatter = defineStore('formatter', {
     formatTokens(
       tokens?: { denom: string; amount: string }[],
       withDenom = true,
-      fmt = '0.0a'
+      fmt = '0.[000]a'
     ): string {
       if (!tokens) return '';
       return tokens.map((x) => this.formatToken(x, withDenom, fmt)).join(', ');
