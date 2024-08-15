@@ -27,10 +27,6 @@ function pageload(p: number) {
     }
   });
 }
-
-function handleSelectChange(event: any) {
-  return ibcStore.fetchConnection(event.target.value);
-}
 </script>
 <template>
   <div>
