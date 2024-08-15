@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import PaginationBar from '@/components/PaginationBar.vue';
+import { CosmosRestClient } from '@/libs/client';
+import { getDynamicApiCosmosDirectory } from '@/libs/network';
 import { formatSeconds } from '@/libs/utils';
 import { useBaseStore, useBlockchain, useFormatter } from '@/stores';
 import {
@@ -10,7 +12,7 @@ import {
   type PaginatedTxs,
 } from '@/types';
 import { Icon } from '@iconify/vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { useIBCModule } from '../connStore';
 
 const props = defineProps(['chain', 'connection_id']);
@@ -19,8 +21,10 @@ const baseStore = useBaseStore();
 const format = useFormatter();
 const ibcStore = useIBCModule();
 const conn = ref({} as Connection);
+const connFrom = ref({} as Connection);
 const clientState = ref({} as { client_id: string; client_state: ClientState });
 const clientStatus = ref({} as { status: string });
+const clientFromStatus = ref({} as { status: string });
 const channels = ref([] as Channel[]);
 
 const connId = computed(() => {
@@ -28,6 +32,11 @@ const connId = computed(() => {
 });
 
 const loading = ref(false);
+const loadingStatusClientEffect = ref(true);
+const loadingBlockHeightEffect = ref(true);
+const loadingIbcConnection = ref(true);
+const lastUpdatedTo = ref('');
+const lastUpdatedFrom = ref('');
 const txs = ref({} as PaginatedTxs);
 const direction = ref('');
 const channel_id = ref('');
@@ -38,6 +47,7 @@ page.value.limit = 5;
 onMounted(async () => {
   if (connId.value) {
     chainStore.rpc.getIBCConnectionsClientState(connId.value).then((x) => {
+      console.log(x, 'x');
       clientState.value = x.identified_client_state;
     });
     chainStore.rpc.getIBCConnectionsChannels(connId.value).then((x) => {
@@ -111,6 +121,96 @@ function color(v: string) {
   }
   return 'warning';
 }
+
+watchEffect(async () => {
+  if (ibcStore && ibcStore.commonIBCs.length > 0 && connId.value) {
+    const res = await Promise.all(
+      ibcStore.commonIBCs.map(async (ibc: any) => {
+        const id = await ibcStore.getConnectionId(ibc.path);
+        return {
+          id,
+          from: ibc.from,
+        };
+      })
+    );
+
+    const findRes = res?.find((r: any) => r.id === connId.value);
+
+    const cosmosClient = CosmosRestClient.newDefault(
+      `${getDynamicApiCosmosDirectory()}${findRes?.from}`
+    );
+
+    cosmosClient
+      .getIBCClientStatusByClientId(conn?.value?.counterparty?.client_id)
+      .then((status) => {
+        clientFromStatus.value = status;
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        loadingStatusClientEffect.value = false;
+      });
+
+    if (
+      clientState.value &&
+      clientState.value.client_state &&
+      clientState.value.client_state.latest_height &&
+      clientState.value.client_state.latest_height.revision_height
+    ) {
+      // get block latest to
+      cosmosClient
+        .getBaseBlockAt(
+          clientState.value?.client_state?.latest_height.revision_height
+        )
+        .then((x) => {
+          lastUpdatedTo.value = x?.block?.header?.time;
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          loadingBlockHeightEffect.value = false;
+        });
+    }
+
+    if (
+      conn.value &&
+      conn.value.counterparty &&
+      conn.value.counterparty.connection_id
+    ) {
+      // get IBC connection
+      cosmosClient
+        .getIBCConnectionsById(conn.value.counterparty.connection_id)
+        .then((x) => {
+          connFrom.value = x.connection;
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          loadingIbcConnection.value = false;
+        });
+
+      // get client state
+      const clientStateFrom = await cosmosClient.getIBCConnectionsClientState(
+        conn.value.counterparty.connection_id
+      );
+
+      const { revision_height } =
+        clientStateFrom?.identified_client_state?.client_state?.latest_height;
+
+      if (revision_height) {
+        chainStore.rpc
+          .getBaseBlockAt(revision_height)
+          .then((x) => (lastUpdatedFrom.value = x?.block?.header?.time))
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    }
+  }
+});
 </script>
 <template>
   <div class="">
@@ -124,10 +224,10 @@ function color(v: string) {
               >
                 {{ baseStore.latest?.block?.header?.chain_id }}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
-                {{ conn.client_id }} {{ props.connection_id }}
-              </div>
-              <div class="flex justify-center mt-1">
+              <div class="flex gap-4 justify-between items-center">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ conn.client_id }}
+                </div>
                 <div
                   class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
                   :class="
@@ -147,6 +247,32 @@ function color(v: string) {
                   {{ clientStatus.status }}
                 </div>
               </div>
+              <div class="flex gap-4 justify-between items-center mt-3">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ props.connection_id }}
+                </div>
+                <div
+                  class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
+                  :class="
+                    conn.state?.indexOf('_OPEN') > -1
+                      ? 'text-success'
+                      : 'text-error'
+                  "
+                >
+                  <span
+                    class="inset-x-0 inset-y-0 opacity-10 absolute"
+                    :class="
+                      conn.state?.indexOf('_OPEN') > -1
+                        ? 'bg-success'
+                        : 'bg-error'
+                    "
+                  ></span>
+                  {{ conn.state }}
+                </div>
+              </div>
+              <div v-if="lastUpdatedTo" class="mt-3">
+                Last updated: {{ format.toDay(lastUpdatedTo) }}
+              </div>
             </div>
           </div>
           <div class="mx-auto flex items-center">
@@ -163,9 +289,62 @@ function color(v: string) {
             >
               {{ clientState.client_state?.chain_id }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              {{ conn.counterparty?.client_id }}
-              {{ conn.counterparty?.connection_id }}
+            <div class="flex gap-4 justify-between items-center">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ conn.counterparty?.client_id }}
+              </div>
+              <div
+                class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
+                :class="
+                  clientFromStatus.status === 'Active'
+                    ? 'text-success'
+                    : 'text-error'
+                "
+              >
+                <span
+                  v-if="loadingStatusClientEffect"
+                  class="loading loading-spinner loading-sm"
+                ></span>
+                <span
+                  class="inset-x-0 inset-y-0 opacity-10 absolute"
+                  :class="
+                    clientFromStatus.status === 'Active'
+                      ? 'bg-success'
+                      : 'bg-error'
+                  "
+                ></span>
+                {{ clientFromStatus.status }}
+              </div>
+            </div>
+            <div class="flex gap-4 justify-between items-center mt-3">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ conn.counterparty?.connection_id }}
+              </div>
+              <div
+                class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
+                :class="
+                  connFrom.state?.indexOf('_OPEN') > -1
+                    ? 'text-success'
+                    : 'text-error'
+                "
+              >
+                <span
+                  v-if="loadingIbcConnection"
+                  class="loading loading-spinner loading-sm"
+                ></span>
+                <span
+                  class="inset-x-0 inset-y-0 opacity-10 absolute"
+                  :class="
+                    connFrom.state?.indexOf('_OPEN') > -1
+                      ? 'bg-success'
+                      : 'bg-error'
+                  "
+                ></span>
+                {{ connFrom.state }}
+              </div>
+            </div>
+            <div v-if="lastUpdatedFrom" class="mt-3">
+              Last updated: {{ format.toDay(lastUpdatedFrom) }}
             </div>
           </div>
         </dl>
