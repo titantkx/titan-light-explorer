@@ -47,7 +47,6 @@ page.value.limit = 5;
 onMounted(async () => {
   if (connId.value) {
     chainStore.rpc.getIBCConnectionsClientState(connId.value).then((x) => {
-      console.log(x, 'x');
       clientState.value = x.identified_client_state;
     });
     chainStore.rpc.getIBCConnectionsChannels(connId.value).then((x) => {

@@ -93,7 +93,7 @@ export const useIBCModule = defineStore('module-ibc', {
         this.registryConf = {} as any;
       }
       const path = `/${this.chain.chainName}/ibc/connection/${
-        connId || `connection-${this.connectionId || 0}`
+        connId || `connection-0`
       }`;
       router.push(path);
     },
