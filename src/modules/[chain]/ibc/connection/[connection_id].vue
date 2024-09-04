@@ -122,94 +122,90 @@ function color(v: string) {
 }
 
 watchEffect(async () => {
-  if (ibcStore && ibcStore.commonIBCs.length > 0 && connId.value) {
-    const res = await Promise.all(
-      ibcStore.commonIBCs.map(async (ibc: any) => {
-        const id = await ibcStore.getConnectionId(ibc.path);
-        return {
-          id,
-          from: ibc.from,
-        };
-      })
-    );
+  if (!ibcStore || ibcStore.commonIBCs.length === 0 || !connId.value) return;
 
-    const findRes = res?.find((r: any) => r.id === connId.value);
+  const findRes = await findMatchingConnection();
+  if (!findRes) return;
 
-    const cosmosClient = CosmosRestClient.newDefault(
-      `${getDynamicApiCosmosDirectory()}${findRes?.from}`
-    );
+  const cosmosClient = createCosmosClient(findRes.from);
 
-    cosmosClient
-      .getIBCClientStatusByClientId(conn?.value?.counterparty?.client_id)
-      .then((status) => {
-        clientFromStatus.value = status;
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-      .finally(() => {
-        loadingStatusClientEffect.value = false;
-      });
-
-    if (
-      clientState.value &&
-      clientState.value.client_state &&
-      clientState.value.client_state.latest_height &&
-      clientState.value.client_state.latest_height.revision_height
-    ) {
-      // get block latest to
-      cosmosClient
-        .getBaseBlockAt(
-          clientState.value?.client_state?.latest_height.revision_height
-        )
-        .then((x) => {
-          lastUpdatedTo.value = x?.block?.header?.time;
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {
-          loadingBlockHeightEffect.value = false;
-        });
-    }
-
-    if (
-      conn.value &&
-      conn.value.counterparty &&
-      conn.value.counterparty.connection_id
-    ) {
-      // get IBC connection
-      cosmosClient
-        .getIBCConnectionsById(conn.value.counterparty.connection_id)
-        .then((x) => {
-          connFrom.value = x.connection;
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {
-          loadingIbcConnection.value = false;
-        });
-
-      // get client state
-      const clientStateFrom = await cosmosClient.getIBCConnectionsClientState(
-        conn.value.counterparty.connection_id
-      );
-
-      const { revision_height } =
-        clientStateFrom?.identified_client_state?.client_state?.latest_height;
-
-      if (revision_height) {
-        chainStore.rpc
-          .getBaseBlockAt(revision_height)
-          .then((x) => (lastUpdatedFrom.value = x?.block?.header?.time))
-          .catch((e) => {
-            console.log(e);
-          });
-      }
-    }
-  }
+  await Promise.all([
+    fetchClientStatus(cosmosClient),
+    fetchLatestBlockTime(cosmosClient),
+    fetchIBCConnectionInfo(cosmosClient),
+  ]);
 });
+
+async function findMatchingConnection() {
+  const connections = await Promise.all(
+    ibcStore.commonIBCs.map(async (ibc: { path: string; from: string }) => ({
+      id: await ibcStore.getConnectionId(ibc.path),
+      from: ibc.from,
+    }))
+  );
+  return connections.find((r) => r.id === connId.value);
+}
+
+function createCosmosClient(from: string) {
+  return CosmosRestClient.newDefault(
+    `${getDynamicApiCosmosDirectory()}${from}`
+  );
+}
+
+async function fetchClientStatus(cosmosClient: CosmosRestClient) {
+  try {
+    clientFromStatus.value = await cosmosClient.getIBCClientStatusByClientId(
+      conn?.value?.counterparty?.client_id
+    );
+  } catch (e) {
+    console.log(e);
+  } finally {
+    loadingStatusClientEffect.value = false;
+  }
+}
+
+async function fetchLatestBlockTime(cosmosClient: CosmosRestClient) {
+  const latestHeight =
+    clientState.value?.client_state?.latest_height?.revision_height;
+  if (!latestHeight) return;
+
+  try {
+    const block = await cosmosClient.getBaseBlockAt(latestHeight);
+    lastUpdatedTo.value = block?.block?.header?.time;
+  } catch (e) {
+    console.log(e);
+  } finally {
+    loadingBlockHeightEffect.value = false;
+  }
+}
+
+async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
+  const counterpartyConnectionId = conn.value?.counterparty?.connection_id;
+  if (!counterpartyConnectionId) return;
+
+  try {
+    connFrom.value = (
+      await cosmosClient.getIBCConnectionsById(counterpartyConnectionId)
+    ).connection;
+
+    const clientStateFrom = await cosmosClient.getIBCConnectionsClientState(
+      counterpartyConnectionId
+    );
+    const revisionHeight =
+      clientStateFrom?.identified_client_state?.client_state?.latest_height
+        ?.revision_height;
+
+    if (revisionHeight) {
+      lastUpdatedFrom.value = (
+        await chainStore.rpc.getBaseBlockAt(revisionHeight)
+      )?.block?.header?.time;
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    loadingIbcConnection.value = false;
+  }
+}
 </script>
 <template>
   <div class="">
@@ -223,7 +219,10 @@ watchEffect(async () => {
               >
                 {{ baseStore.latest?.block?.header?.chain_id }}
               </div>
-              <div class="flex gap-4 justify-between items-center">
+              <div
+                v-if="conn.client_id && clientStatus.status"
+                class="flex gap-4 justify-between items-center"
+              >
                 <div class="text-sm text-gray-500 dark:text-gray-400">
                   {{ conn.client_id }}
                 </div>
@@ -246,7 +245,10 @@ watchEffect(async () => {
                   {{ clientStatus.status }}
                 </div>
               </div>
-              <div class="flex gap-4 justify-between items-center mt-3">
+              <div
+                v-if="props.connection_id && conn.state"
+                class="flex gap-4 justify-between items-center mt-3"
+              >
                 <div class="text-sm text-gray-500 dark:text-gray-400">
                   {{ props.connection_id }}
                 </div>
@@ -284,11 +286,15 @@ watchEffect(async () => {
           </div>
           <div class="mx-auto">
             <div
+              v-if="clientState.client_state?.chain_id"
               class="order-first text-3xl font-semibold tracking-tight text-main mb-2"
             >
               {{ clientState.client_state?.chain_id }}
             </div>
-            <div class="flex gap-4 justify-between items-center">
+            <div
+              v-if="conn.counterparty?.client_id"
+              class="flex gap-4 justify-between items-center"
+            >
               <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ conn.counterparty?.client_id }}
               </div>
@@ -315,7 +321,10 @@ watchEffect(async () => {
                 {{ clientFromStatus.status }}
               </div>
             </div>
-            <div class="flex gap-4 justify-between items-center mt-3">
+            <div
+              v-if="conn.counterparty?.connection_id"
+              class="flex gap-4 justify-between items-center mt-3"
+            >
               <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ conn.counterparty?.connection_id }}
               </div>
