@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import PaginationBar from '@/components/PaginationBar.vue';
 import { useBlockchain, useFormatter } from '@/stores';
-import { PageRequest, type PaginatedTxs } from '@/types';
+import {
+  PageRequest,
+  type Attributes,
+  type PaginatedTxs,
+  type Tx,
+} from '@/types';
 import { onMounted, ref } from 'vue';
 
 const props = defineProps(['chain']);
@@ -9,7 +14,7 @@ const props = defineProps(['chain']);
 const chainStore = useBlockchain();
 const format = useFormatter();
 
-const txs = ref<PaginatedTxs>({
+const tx = ref<PaginatedTxs>({
   txs: [],
   tx_responses: [],
   total: '',
@@ -20,7 +25,7 @@ const txs = ref<PaginatedTxs>({
 });
 
 const page = ref(new PageRequest());
-page.value.limit = 5;
+page.value.limit = 10;
 
 const loading = ref(true);
 
@@ -38,13 +43,67 @@ async function loadPage(pageNum: number) {
       {},
       page.value
     );
-    txs.value = res;
+    tx.value = res;
   } catch (error) {
     console.error(error);
   } finally {
     loading.value = false;
   }
 }
+
+const getRefundAmount = (
+  events: {
+    type: string;
+    attributes: Attributes[];
+  }[]
+): { denom: string; amount: string } => {
+  if (!events) return format.parseToken('0');
+
+  const refundEvent = events.find((event) => event.type === 'refund');
+  if (!refundEvent) return format.parseToken('0');
+
+  const amountAttribute = refundEvent.attributes.find(
+    (attr) => attr.key === 'amount'
+  );
+  if (!amountAttribute) return format.parseToken('0');
+
+  return format.parseToken(amountAttribute.value);
+};
+
+function getFee(
+  tx: Tx,
+  events: {
+    type: string;
+    attributes: Attributes[];
+  }[]
+): string {
+  if (!tx?.auth_info?.fee?.amount || !events) return '';
+
+  const refundAmount = getRefundAmount(events);
+
+  const fee = tx.auth_info.fee.amount.map((fee) => {
+    if (fee.denom === refundAmount.denom) {
+      const adjustedAmount = BigInt(fee.amount) - BigInt(refundAmount.amount);
+      return {
+        denom: fee.denom,
+        amount: adjustedAmount.toString(),
+      };
+    }
+    return fee;
+  });
+
+  return format.formatTokens(fee);
+}
+
+const getAmount = (messages: any[]): string => {
+  if (messages.length === 0) return '-';
+
+  const messagesWithAmount = messages.filter((msg) => 'amount' in msg);
+  if (messagesWithAmount.length === 0) return '-';
+
+  const amounts = messagesWithAmount.map((msg) => msg.amount).flat();
+  return format.formatTokens(amounts);
+};
 </script>
 
 <template>
@@ -57,12 +116,24 @@ async function loadPage(pageNum: number) {
             <th class="py-3">{{ $t('account.height') }}</th>
             <th class="py-3">{{ $t('account.hash') }}</th>
             <th class="py-3">{{ $t('account.messages') }}</th>
+            <th class="py-3">{{ $t('tx.amount') }}</th>
+            <th class="py-3">{{ $t('tx.fee') }}</th>
             <th class="py-3">{{ $t('account.time') }}</th>
           </tr>
         </thead>
         <tbody class="text-sm">
           <template v-if="loading">
-            <tr v-for="i in 5" :key="i" class="animate-pulse">
+            <tr v-for="i in page.limit" :key="i" class="animate-pulse">
+              <td class="py-3">
+                <div
+                  class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                ></div>
+              </td>
+              <td class="py-3">
+                <div
+                  class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                ></div>
+              </td>
               <td class="py-3">
                 <div
                   class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
@@ -85,14 +156,14 @@ async function loadPage(pageNum: number) {
               </td>
             </tr>
           </template>
-          <tr v-else-if="txs.tx_responses.length === 0">
+          <tr v-else-if="tx.tx_responses.length === 0">
             <td colspan="4">
               <div class="text-center">
                 {{ $t('account.no_transactions') }}
               </div>
             </td>
           </tr>
-          <tr v-for="(v, index) in txs.tx_responses" :key="index" v-else>
+          <tr v-for="(v, index) in tx.tx_responses" :key="index" v-else>
             <td class="text-sm py-3">
               <RouterLink
                 :to="`/${chain}/block/${v.height}`"
@@ -120,6 +191,12 @@ async function loadPage(pageNum: number) {
               <Icon v-else icon="mdi-multiply" class="text-error text-lg" />
             </td>
             <td class="py-3">
+              {{ getAmount(v.tx.body.messages) }}
+            </td>
+            <td class="py-3">
+              {{ getFee(v.tx, v.events) }}
+            </td>
+            <td class="py-3">
               {{ format.toLocaleDate(v.timestamp) }}
               <span class="text-xs"
                 >({{ format.toDay(v.timestamp, 'from') }})</span
@@ -131,7 +208,7 @@ async function loadPage(pageNum: number) {
     </div>
     <PaginationBar
       :limit="page.limit"
-      :total="txs?.total"
+      :total="tx?.total"
       :callback="loadPage"
     />
   </div>
