@@ -2,6 +2,7 @@
 import DonutChart from '@/components/charts/DonutChart.vue';
 import Countdown from '@/components/Countdown.vue';
 import DynamicComponent from '@/components/dynamic/DynamicComponent.vue';
+import PaginationBar from '@/components/PaginationBar.vue';
 import {
   useBlockchain,
   useFormatter,
@@ -9,19 +10,20 @@ import {
   useTxDialog,
   useWalletStore,
 } from '@/stores';
-import type {
-  AuthAccount,
-  Delegation,
-  DelegatorRewards,
-  TxResponse,
-  UnbondingResponses,
+import {
+  PageRequest,
+  type AuthAccount,
+  type Delegation,
+  type DelegatorRewards,
+  type PaginatedTxs,
+  type UnbondingResponses,
 } from '@/types';
 import type { Coin } from '@cosmjs/amino';
 import { Icon } from '@iconify/vue';
 import { computed, ref } from '@vue/reactivity';
 import { bech32 } from 'bech32';
 import { Buffer } from 'buffer';
-import { watch, watchEffect } from 'vue';
+import { onMounted, watch, watchEffect } from 'vue';
 import 'vue-json-pretty/lib/styles.css';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -47,13 +49,24 @@ const stakingStore = useStakingStore();
 const dialog = useTxDialog();
 const format = useFormatter();
 const account = ref({} as AuthAccount);
-const txs = ref({} as TxResponse[]);
+const txs = ref<PaginatedTxs>({
+  txs: [],
+  tx_responses: [],
+  total: '',
+  pagination: {
+    next_key: '',
+    total: '',
+  },
+});
 const delegations = ref([] as Delegation[]);
 const rewards = ref({} as DelegatorRewards);
 const balances = ref([] as Coin[]);
 const unbonding = ref([] as UnbondingResponses[]);
 const unbondingTotal = ref(0);
 const showCopyToast = ref(0);
+const loadingTxs = ref(false);
+const page = ref(new PageRequest());
+page.value.limit = 10;
 
 const totalAmountByCategory = computed(() => {
   let sumDel = 0;
@@ -105,7 +118,10 @@ const totalValue = computed(() => {
   return format.formatNumber(value, '0,0.00');
 });
 
-loadAccount(props.user);
+onMounted(() => {
+  loadAccount(props.user);
+  loadTxs(1);
+});
 
 watch(route, () => {
   if (route.path.startsWith(`/${props.chain}/user/`))
@@ -115,6 +131,22 @@ watch(route, () => {
 watchEffect(() => {
   loadAccount(props.user);
 });
+
+async function loadTxs(pageNum: number) {
+  try {
+    loadingTxs.value = true;
+    page.value.setPage(pageNum);
+    const res = await blockchain.rpc.getTxsBySender(
+      props.user ?? route.params.user,
+      page.value
+    );
+    txs.value = res;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loadingTxs.value = false;
+  }
+}
 
 function loadAccount(address: string) {
   if (!walletStore?.currentAddress) {
@@ -129,9 +161,6 @@ function loadAccount(address: string) {
   }
   blockchain.rpc.getAuthAccount(address).then((x) => {
     account.value = x.account;
-  });
-  blockchain.rpc.getTxsBySender(address).then((x) => {
-    txs.value = x.tx_responses;
   });
   blockchain.rpc.getDistributionDelegatorRewards(address).then((x) => {
     rewards.value = x;
@@ -634,14 +663,38 @@ const tipMsg = computed(() => {
             </tr>
           </thead>
           <tbody class="text-sm">
-            <tr v-if="txs.length === 0">
-              <td colspan="10">
+            <template v-if="loadingTxs">
+              <tr v-for="i in 5" :key="i" class="animate-pulse">
+                <td class="py-3">
+                  <div
+                    class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                  ></div>
+                </td>
+                <td class="py-3">
+                  <div
+                    class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                  ></div>
+                </td>
+                <td class="py-3">
+                  <div
+                    class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                  ></div>
+                </td>
+                <td class="py-3">
+                  <div
+                    class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[480px] mb-2.5"
+                  ></div>
+                </td>
+              </tr>
+            </template>
+            <tr v-else-if="txs.tx_responses.length === 0">
+              <td colspan="4">
                 <div class="text-center">
                   {{ $t('account.no_transactions') }}
                 </div>
               </td>
             </tr>
-            <tr v-for="(v, index) in txs" :key="index">
+            <tr v-for="(v, index) in txs.tx_responses" :key="index" v-else>
               <td class="text-sm py-3">
                 <RouterLink
                   :to="`/${chain}/block/${v.height}`"
@@ -678,6 +731,11 @@ const tipMsg = computed(() => {
           </tbody>
         </table>
       </div>
+      <PaginationBar
+        :limit="page.limit"
+        :total="txs?.total"
+        :callback="loadTxs"
+      />
     </div>
 
     <!-- Account -->
