@@ -7,8 +7,9 @@ const props = defineProps(['chain']);
 const walletStore = useWalletStore();
 
 watchEffect(() => {
-  if (walletStore && walletStore.currentAddress)
+  if (walletStore && walletStore.currentAddress) {
     router.push(`/${props.chain}/user/${walletStore.currentAddress}`);
+  }
 });
 </script>
 <template>
