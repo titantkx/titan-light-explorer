@@ -143,7 +143,7 @@ onMounted(() => {
     {
       meta: {
         i18n: 'state-sync',
-        order: 11
+        order: 13
       }
     }
   </route>

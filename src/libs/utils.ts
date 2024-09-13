@@ -218,6 +218,8 @@ export function handleIconForMenu(menuName: any) {
       return 'material-symbols:sync-outline';
     case Menu.USER:
       return 'mdi:user';
+    case Menu.TRANSACTIONS:
+      return 'bitcoin-icons:transactions-filled';
 
     default:
       break;

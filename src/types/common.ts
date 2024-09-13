@@ -51,6 +51,7 @@ export class PageRequest {
 
 export interface PaginatedResponse {
   pagination: Pagination;
+  total?: string;
 }
 
 export class Response<T> {

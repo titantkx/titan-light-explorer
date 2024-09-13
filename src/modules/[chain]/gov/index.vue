@@ -63,7 +63,7 @@ function page(p: number) {
   {
     meta: {
       i18n: 'governance',
-      order: 5
+      order: 7
     }
   }
 </route>

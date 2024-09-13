@@ -46,20 +46,25 @@ page.value.limit = 5;
 
 onMounted(async () => {
   if (connId.value) {
-    chainStore.rpc.getIBCConnectionsClientState(connId.value).then((x) => {
-      clientState.value = x.identified_client_state;
-    });
-    chainStore.rpc.getIBCConnectionsChannels(connId.value).then((x) => {
-      channels.value = x.channels;
-    });
-    await chainStore.rpc.getIBCConnectionsById(connId.value).then((x) => {
-      conn.value = x.connection;
-    });
-    chainStore.rpc
-      .getIBCClientStatusByClientId(conn.value.client_id)
-      .then((x) => {
-        clientStatus.value = x;
-      });
+    try {
+      const [clientStateResponse, channelsResponse, connectionResponse] =
+        await Promise.all([
+          chainStore.rpc.getIBCConnectionsClientState(connId.value),
+          chainStore.rpc.getIBCConnectionsChannels(connId.value),
+          chainStore.rpc.getIBCConnectionsById(connId.value),
+        ]);
+
+      clientState.value = clientStateResponse.identified_client_state;
+      channels.value = channelsResponse.channels;
+      conn.value = connectionResponse.connection;
+
+      const clientStatusResponse =
+        await chainStore.rpc.getIBCClientStatusByClientId(conn.value.client_id);
+      clientStatus.value = clientStatusResponse;
+    } catch (error) {
+      console.error('Error fetching IBC connection data:', error);
+      // Handle error appropriately (e.g., show error message to user)
+    }
   }
 });
 
@@ -128,6 +133,7 @@ watchEffect(async () => {
   if (!findRes) return;
 
   const cosmosClient = createCosmosClient(findRes.from);
+  if (!cosmosClient) return;
 
   await Promise.all([
     fetchClientStatus(cosmosClient),
@@ -153,9 +159,10 @@ function createCosmosClient(from: string) {
 }
 
 async function fetchClientStatus(cosmosClient: CosmosRestClient) {
+  if (!conn.value?.counterparty?.client_id) return;
   try {
     clientFromStatus.value = await cosmosClient.getIBCClientStatusByClientId(
-      conn?.value?.counterparty?.client_id
+      conn.value?.counterparty?.client_id
     );
   } catch (e) {
     console.log(e);

@@ -247,7 +247,8 @@
     "gas": "Gas",
     "fee": "手续费",
     "memo": "备注",
-    "no_messages": "没有消息"
+    "no_messages": "没有消息",
+    "amount": "Amount"
   },
   "uptime": {
     "overall": "整体",
