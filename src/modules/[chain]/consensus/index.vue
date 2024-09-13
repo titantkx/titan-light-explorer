@@ -336,7 +336,7 @@ async function update() {
   {
     meta: {
       i18n: 'consensus',
-      order: 7
+      order: 9
     }
   }
 </route>

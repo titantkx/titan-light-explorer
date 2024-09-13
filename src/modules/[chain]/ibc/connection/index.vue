@@ -8,7 +8,7 @@
     {
       meta: {
         i18n: 'ibc',
-        order: 8
+        order: 10
       }
     }
   </route>

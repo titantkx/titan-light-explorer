@@ -218,7 +218,7 @@ const getAmount = (messages: any[]): string => {
   {
     meta: {
       i18n: 'transactions',
-      order: 13
+      order: 4
     }
   }
 </route>

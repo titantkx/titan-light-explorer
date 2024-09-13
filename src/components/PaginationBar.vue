@@ -26,7 +26,13 @@ const pages = computed((): PageItem[] => {
     return [];
   }
 
-  const result: PageItem[] = [{ color: '', page: 1, type: 'number' }];
+  const result: PageItem[] = [
+    {
+      color: current.value === 1 ? 'btn-primary' : '',
+      page: 1,
+      type: 'number',
+    },
+  ];
 
   if (current.value > showSize + 1) {
     result.push({ color: '', page: 0, type: 'ellipsis' });

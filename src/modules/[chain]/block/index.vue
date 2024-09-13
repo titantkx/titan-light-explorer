@@ -138,7 +138,7 @@ const list = computed(() => {
     {
       meta: {
         i18n: 'blocks',
-        order: 4
+        order: 5
       }
     }
   </route>

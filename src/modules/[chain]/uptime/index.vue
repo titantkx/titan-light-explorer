@@ -299,7 +299,7 @@ function fetchAllKeyRotation() {
   {
     meta: {
       i18n: 'uptime',
-      order: 4
+      order: 6
     }
   }
 </route>
