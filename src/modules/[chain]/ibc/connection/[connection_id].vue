@@ -32,9 +32,9 @@ const connId = computed(() => {
 });
 
 const loading = ref(false);
-const loadingStatusClientEffect = ref(true);
-const loadingBlockHeightEffect = ref(true);
-const loadingIbcConnection = ref(true);
+const loadingStatusClientEffect = ref(false);
+const loadingBlockHeightEffect = ref(false);
+const loadingIbcConnection = ref(false);
 const lastUpdatedTo = ref('');
 const lastUpdatedFrom = ref('');
 const txs = ref({} as PaginatedTxs);
@@ -100,6 +100,7 @@ function fetchSendingTxs(channel: string, port: string, pageNum = 0) {
     })
     .finally(() => (loading.value = false));
 }
+
 function fetchRecevingTxs(channel: string, port: string, pageNum = 0) {
   page.value.setPage(pageNum);
   loading.value = true;
@@ -127,7 +128,14 @@ function color(v: string) {
 }
 
 watchEffect(async () => {
-  if (!ibcStore || ibcStore.commonIBCs.length === 0 || !connId.value) return;
+  if (
+    !ibcStore ||
+    ibcStore.commonIBCs.length === 0 ||
+    !conn.value ||
+    !clientState.value ||
+    !connId.value
+  )
+    return;
 
   const findRes = await findMatchingConnection();
   if (!findRes) return;
@@ -135,11 +143,9 @@ watchEffect(async () => {
   const cosmosClient = createCosmosClient(findRes.from);
   if (!cosmosClient) return;
 
-  await Promise.all([
-    fetchClientStatus(cosmosClient),
-    fetchLatestBlockTime(cosmosClient),
-    fetchIBCConnectionInfo(cosmosClient),
-  ]);
+  fetchClientStatus(cosmosClient);
+  fetchLatestBlockTime(cosmosClient);
+  fetchIBCConnectionInfo(cosmosClient);
 });
 
 async function findMatchingConnection() {
@@ -161,6 +167,7 @@ function createCosmosClient(from: string) {
 async function fetchClientStatus(cosmosClient: CosmosRestClient) {
   if (!conn.value?.counterparty?.client_id) return;
   try {
+    loadingStatusClientEffect.value = true;
     clientFromStatus.value = await cosmosClient.getIBCClientStatusByClientId(
       conn.value?.counterparty?.client_id
     );
@@ -177,6 +184,7 @@ async function fetchLatestBlockTime(cosmosClient: CosmosRestClient) {
   if (!latestHeight) return;
 
   try {
+    loadingBlockHeightEffect.value = true;
     const block = await cosmosClient.getBaseBlockAt(latestHeight);
     lastUpdatedTo.value = block?.block?.header?.time;
   } catch (e) {
@@ -191,6 +199,7 @@ async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
   if (!counterpartyConnectionId) return;
 
   try {
+    loadingIbcConnection.value = true;
     connFrom.value = (
       await cosmosClient.getIBCConnectionsById(counterpartyConnectionId)
     ).connection;
@@ -305,7 +314,12 @@ async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
               <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ conn.counterparty?.client_id }}
               </div>
+              <span
+                v-if="loadingStatusClientEffect"
+                class="loading loading-spinner loading-sm"
+              ></span>
               <div
+                v-if="clientFromStatus.status"
                 class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
                 :class="
                   clientFromStatus.status === 'Active'
@@ -313,10 +327,6 @@ async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
                     : 'text-error'
                 "
               >
-                <span
-                  v-if="loadingStatusClientEffect"
-                  class="loading loading-spinner loading-sm"
-                ></span>
                 <span
                   class="inset-x-0 inset-y-0 opacity-10 absolute"
                   :class="
@@ -335,7 +345,12 @@ async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
               <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ conn.counterparty?.connection_id }}
               </div>
+              <span
+                v-if="loadingIbcConnection"
+                class="loading loading-spinner loading-sm"
+              ></span>
               <div
+                v-if="connFrom.state"
                 class="text-xs truncate relative py-2 px-4 rounded-full w-fit"
                 :class="
                   connFrom.state?.indexOf('_OPEN') > -1
@@ -343,10 +358,6 @@ async function fetchIBCConnectionInfo(cosmosClient: CosmosRestClient) {
                     : 'text-error'
                 "
               >
-                <span
-                  v-if="loadingIbcConnection"
-                  class="loading loading-spinner loading-sm"
-                ></span>
                 <span
                   class="inset-x-0 inset-y-0 opacity-10 absolute"
                   :class="
