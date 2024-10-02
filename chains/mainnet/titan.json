@@ -1,12 +1,14 @@
 {
   "chain_name": "Titan",
   "api": [
+    "https://rest.cosmos.directory/titan",
     "https://titan-lcd.titanlab.io:443",
     "https://titan-lcd-tokyo.titanlab.io:443",
     "https://titan-lcd-seoul.titanlab.io:443",
     "https://titan-lcd-hongkong.titanlab.io:443"
   ],
   "rpc": [
+    "https://rpc.cosmos.directory/titan",
     "https://titan-rpc.titanlab.io:443",
     "https://titan-rpc-tokyo.titanlab.io:443",
     "https://titan-rpc-seoul.titanlab.io:443",
