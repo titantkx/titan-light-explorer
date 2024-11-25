@@ -128,6 +128,8 @@ function color(v: string) {
 }
 
 watchEffect(async () => {
+  console.log(conn.value, 'conn');
+
   if (
     !ibcStore ||
     ibcStore.commonIBCs.length === 0 ||
@@ -136,6 +138,8 @@ watchEffect(async () => {
     !connId.value
   )
     return;
+
+  console.log('vo');
 
   const findRes = await findMatchingConnection();
   if (!findRes) return;
@@ -157,6 +161,8 @@ async function findMatchingConnection() {
   );
   return connections.find((r) => r.id === connId.value);
 }
+
+console.log(ibcStore.commonIBCs);
 
 function createCosmosClient(from: string) {
   return CosmosRestClient.newDefault(
