@@ -48,7 +48,7 @@
     "btn_delegate": "质押",
     "btn_redelegate": "再质押",
     "btn_withdraw": "提取",
-    "btn_withdraw_all": "全部撤回",
+    "btn_withdraw_all": "提取獎勵",
     "btn_unbond": "赎回",
     "validator": "验证人",
     "delegation": "质押",
