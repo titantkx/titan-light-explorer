@@ -19,6 +19,12 @@
       "symbol": "TKX",
       "exponent": "18",
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
+    },
+    {
+      "base": "factory/titan1uvt40rsp68wtas0y75w34qdn5h0g5eyefy5gmvzftdnupyv7q7vq7jfynw/w-btc",
+      "symbol": "BTC",
+      "exponent": "8",
+      "logo": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/titan_18889/factory/titan1uvt40rsp68wtas0y75w34qdn5h0g5eyefy5gmvzftdnupyv7q7vq7jfynw/btc.png"
     }
   ],
   "keplr_price_step": {
