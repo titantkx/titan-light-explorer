@@ -31,6 +31,12 @@
       "exponent": "18",
       "coingecko_id": "tokenize-xchange",
       "logo": "https://tokenize-client-public.s3.ap-southeast-1.amazonaws.com/titan_static/devnet/icons/titan-dark.svg"
+    },
+    {
+      "base": "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+      "symbol": "USDC",
+      "exponent": "6",
+      "logo": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/grand/uusdc.png"
     }
   ],
   "keplr_price_step": {
