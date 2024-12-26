@@ -356,8 +356,12 @@ async function connect() {
     sending.value = false;
     if (
       message &&
-      (message.toLowerCase().includes(ERROR_MESSAGE.INVALID_CHAIN) ||
-        message.toLowerCase().includes(ERROR_MESSAGE.NO_CHAIN))
+      [
+        ERROR_MESSAGE.INVALID_CHAIN,
+        ERROR_MESSAGE.NO_CHAIN,
+        ERROR_MESSAGE.NO_CHAIN_TITAN_TESTNET,
+        ERROR_MESSAGE.NO_CHAIN_TITAN_MAIN,
+      ].some((error) => message.toLowerCase().includes(error))
     ) {
       error.value = '';
       if (name.value === WalletName.Leap) {
