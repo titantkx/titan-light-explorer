@@ -159,7 +159,7 @@ function loadTx(hash: string) {
                   format.formatTokens(
                     [
                       {
-                        denom: 'utkx',
+                        denom: 'atkx',
                         amount: (
                           BigInt(ethTx.gas) * BigInt(ethTx.gasPrice)
                         ).toString(),
@@ -198,7 +198,7 @@ function loadTx(hash: string) {
                   format.formatTokens(
                     [
                       {
-                        denom: 'utkx',
+                        denom: 'atkx',
                         amount: BigInt(ethTx.value).toString(),
                       },
                     ],
