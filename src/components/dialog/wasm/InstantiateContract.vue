@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Coin } from '@cosmjs/amino';
-import { toBase64 } from '@cosmjs/encoding';
 import { computed, ref, type PropType } from 'vue';
 import type { CoinMetadata } from '../../../libs/utils/type';
 
@@ -33,7 +32,7 @@ const msgs = computed(() => {
         /** Label is optional metadata to be stored with a contract instance. */
         label: label.value,
         /** Msg json encoded message to be passed to the contract on instantiation */
-        msg: toBase64(new TextEncoder().encode(msg.value)),
+        msg: new TextEncoder().encode(msg.value),
         /** Funds coins that are transferred to the contract on instantiation */
         funds: JSON.parse(JSON.stringify(funds.value)),
       },
